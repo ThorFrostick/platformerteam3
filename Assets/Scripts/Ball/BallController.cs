@@ -121,7 +121,7 @@ namespace Ball
             float accel = isOnGround ? accelHorizontal : accelHorizontal_Air;
             float friction = isOnGround ? frictionHorizontal : frictionHorizontal_Air;
             
-            if (inputDirection.magnitude > 0.1f)
+            if (Mathf.Abs(inputDirection.x) > 0.1f)
             {
                 X += (inputDirection.x > 0.1f ? 1 : -1) * accel * Time.fixedDeltaTime;
                 X = Mathf.Clamp(X, -maxHorizontalSpeed, maxHorizontalSpeed);
