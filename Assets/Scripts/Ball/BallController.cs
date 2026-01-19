@@ -1,17 +1,30 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Input;
 using UnityEngine;
+using UnityEngine.Splines;
 
 namespace Ball
 {
+    public enum ControlMode
+    {
+        Smooth,
+        Tracks
+    }
     public class BallController : MonoBehaviour
     {
+        #region options
+        public ControlMode ControlMode;
+        #endregion
+        
         #region Resources
         public Transform forwardIndicator;
+        public Transform tracks;
         public BallMovementParam movementParam;
         public float initialSpeed;
         public float accelForward;
+        public Transform spawnPoint;
         #endregion
         
         #region MovementParam
@@ -27,17 +40,24 @@ namespace Ball
         float coyoteTimeDuration;
         Vector3 groundCheckCenter;
         float groundCheckRange;
+        float trackSwitchingSpeed;
         #endregion
 
         #region Status
         bool isOnGround;
         bool isInJumpWindow;
         bool isJumpReady = true;
+        
+        //For Tracks
+        int currentTrack;
+        List<SplineContainer> trackList =  new List<SplineContainer>();
+        Vector3 targetPosition;
         #endregion
 
         #region Input
         Vector2 inputDirection;
         bool isJumping;
+        bool isMoveReset;
         #endregion
 
         #region Components
@@ -59,6 +79,7 @@ namespace Ball
             coyoteTimeDuration = param.coyoteTimeDuration;
             groundCheckCenter = param.groundCheckCenter;
             groundCheckRange = param.groundCheckRange;
+            trackSwitchingSpeed = param.trackSwitchingSpeed;
         }
 
         void Awake()
@@ -70,6 +91,9 @@ namespace Ball
             inputHandler.MoveHandler = val => { inputDirection = val; };
             inputHandler.JumpHandler = () => { isJumping = isInJumpWindow; };
             inputHandler.enabled = true;
+            for (int i = 0; i < tracks.childCount; i++)
+                trackList.Add(tracks.GetChild(i).GetComponent<SplineContainer>());
+            currentTrack = (trackList.Count - 1) / 2;
         }
 
         void Start()
@@ -79,6 +103,7 @@ namespace Ball
             transform.rotation = Quaternion.LookRotation(forwardDirection, Vector3.up);
             rb.linearVelocity = transform.forward * initialSpeed;
             isJumpReady = true;
+            isMoveReset = true;
         }
 
         void OnValidate()
@@ -117,22 +142,41 @@ namespace Ball
                 isJumping = false;
             }
             Y -= gravity * Time.fixedDeltaTime;
-            
-            float accel = isOnGround ? accelHorizontal : accelHorizontal_Air;
-            float friction = isOnGround ? frictionHorizontal : frictionHorizontal_Air;
-            
-            if (Mathf.Abs(inputDirection.x) > 0.1f)
+
+            if (ControlMode == ControlMode.Smooth)
             {
-                X += (inputDirection.x > 0.1f ? 1 : -1) * accel * Time.fixedDeltaTime;
-                X = Mathf.Clamp(X, -maxHorizontalSpeed, maxHorizontalSpeed);
+                float accel = isOnGround ? accelHorizontal : accelHorizontal_Air;
+                float friction = isOnGround ? frictionHorizontal : frictionHorizontal_Air;
+                
+                if (Mathf.Abs(inputDirection.x) > 0.1f)
+                {
+                    X += (inputDirection.x > 0.1f ? 1 : -1) * accel * Time.fixedDeltaTime;
+                    X = Mathf.Clamp(X, -maxHorizontalSpeed, maxHorizontalSpeed);
+                }
+                else
+                {
+                    X -= Mathf.Clamp(Mathf.Sign(X) * friction * Time.fixedDeltaTime, -Mathf.Abs(X), Mathf.Abs(X));
+                }
             }
-            else
+            else if (ControlMode == ControlMode.Tracks)
             {
-                X -= Mathf.Clamp(Mathf.Sign(X) * friction * Time.fixedDeltaTime, -Mathf.Abs(X), Mathf.Abs(X));
+                if (Mathf.Abs(inputDirection.x) > 0.1f)
+                {
+                    if (isMoveReset)
+                    {
+                        currentTrack = Math.Clamp(currentTrack + Math.Sign(inputDirection.x), 0, trackList.Count - 1);
+                        isMoveReset = false;
+                        Debug.Log($"SetTrack: {currentTrack}");
+                    }
+                }
+                else
+                    isMoveReset = true;
+                targetPosition = CalcPosition(trackList[currentTrack], transform.position, forwardDirection);
+                X = CalcSpeed();
             }
 
             Z += accelForward * Time.fixedDeltaTime;
-            rb.linearVelocity = new Vector3(X, Y, Z);
+            rb.linearVelocity = X * transform.right+ Y * transform.up + Z * forwardDirection;
         }
 
         Coroutine coyoteTimerInProgress;
@@ -157,7 +201,36 @@ namespace Ball
             Collider[] colliders = Physics.OverlapSphere(transform.position + groundCheckCenter, groundCheckRange, LayerMask.GetMask("Ground"));
             return colliders.Length > 0;
         }
+
+        Vector3 CalcPosition(SplineContainer spline, Vector3 currentPosition, Vector3 direction)
+        {
+            float l = 0, r = 1f, mid = 0.5f;
+            Vector3 p = spline.EvaluatePosition(mid);
+            float eps = 0.001f;
+            while (r - l > eps)
+            {
+                if (Vector3.Dot(p - currentPosition, direction) < 0)
+                    l = mid;
+                else
+                    r = mid;
+                mid = (l + r) / 2;
+                p =  spline.EvaluatePosition(mid);
+            }
+            return p;
+        }
+
+        float CalcSpeed()
+        {
+            float targetX = Vector3.Dot(targetPosition - transform.position, transform.right);
+            float speed = Mathf.Abs(targetX) < 0.01f? 0: Mathf.Max(Mathf.Abs(targetX * trackSwitchingSpeed), 0.1f) * Mathf.Sign(targetX);
+            return speed;
+        }
+
+        public void Reset()
+        {
             
+        }
+
         #endregion
 
         void OnDrawGizmosSelected()

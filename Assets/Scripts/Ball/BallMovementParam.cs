@@ -16,5 +16,6 @@ namespace Ball
         public float coyoteTimeDuration;
         public Vector3 groundCheckCenter;
         public float groundCheckRange;
+        public float trackSwitchingSpeed;
     }
 }
