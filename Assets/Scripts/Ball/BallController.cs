@@ -24,6 +24,7 @@ namespace Ball
         public BallMovementParam movementParam;
         public float initialSpeed;
         public float accelForward;
+        public Transform spawnPoint;
         #endregion
         
         #region MovementParam
@@ -175,7 +176,7 @@ namespace Ball
             }
 
             Z += accelForward * Time.fixedDeltaTime;
-            rb.linearVelocity = new Vector3(X, Y, Z);
+            rb.linearVelocity = X * transform.right+ Y * transform.up + Z * forwardDirection;
         }
 
         Coroutine coyoteTimerInProgress;
@@ -224,7 +225,12 @@ namespace Ball
             float speed = Mathf.Abs(targetX) < 0.01f? 0: Mathf.Max(Mathf.Abs(targetX * trackSwitchingSpeed), 0.1f) * Mathf.Sign(targetX);
             return speed;
         }
+
+        public void Reset()
+        {
             
+        }
+
         #endregion
 
         void OnDrawGizmosSelected()
