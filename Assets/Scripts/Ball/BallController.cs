@@ -85,6 +85,7 @@ namespace Ball
 
         void Awake()
         {
+            Application.targetFrameRate = 60;
             rb = GetComponent<Rigidbody>();
             inputHandler = GetComponent<BallInputHandler>();
             inputHandler.enabled = false;
