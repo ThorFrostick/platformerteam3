@@ -1,3 +1,4 @@
+using Ball;
 using UnityEngine;
 
 public class KillBarrier : MonoBehaviour
@@ -10,6 +11,7 @@ public class KillBarrier : MonoBehaviour
             //If we are colliding with the Player, display a Game Over message.
             // -- TESTING PURPOSES ONLY --
             Debug.Log("Game Over");
+            collision.GetComponent<BallController>()?.Reset();
         }
     }
 }

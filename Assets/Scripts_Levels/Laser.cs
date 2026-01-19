@@ -1,3 +1,4 @@
+using Ball;
 using UnityEngine;
 
 public class Laser : MonoBehaviour
@@ -10,7 +11,7 @@ public class Laser : MonoBehaviour
             //If we are colliding with the Player, 
             // -- TESTING PURPOSES ONLY --
             //reset the Player to the beginning of the level.
-            collision.gameObject.transform.position = new Vector3(-0.18f, 0f, 8.81f);
+            collision.GetComponent<BallController>()?.Reset();
         }
     }
 }

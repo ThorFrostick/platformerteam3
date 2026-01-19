@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Input;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -25,6 +26,7 @@ namespace Ball
         public float initialSpeed;
         public float accelForward;
         public Transform spawnPoint;
+        public CinemachineCamera cam;
         #endregion
         
         #region MovementParam
@@ -34,7 +36,7 @@ namespace Ball
         float accelHorizontal_Air;
         float frictionHorizontal;
         float frictionHorizontal_Air;
-        float jumpImpulse;
+        float jumpHeight;
         float jumpCooldown;
         float gravity;
         float coyoteTimeDuration;
@@ -62,7 +64,6 @@ namespace Ball
 
         #region Components
         Rigidbody rb;
-        Camera cam;
         BallInputHandler inputHandler;
         #endregion
 
@@ -73,7 +74,7 @@ namespace Ball
             accelHorizontal_Air = param.accelHorizontalInAir;
             frictionHorizontal =  param.frictionHorizontal;
             frictionHorizontal_Air = param.frictionHorizontalInAir;
-            jumpImpulse = param.jumpImpulse;
+            jumpHeight = param.jumpHeight;
             jumpCooldown = param.jumpCooldown;
             gravity = param.gravity;
             coyoteTimeDuration = param.coyoteTimeDuration;
@@ -84,16 +85,18 @@ namespace Ball
 
         void Awake()
         {
-            cam = Camera.main;
             rb = GetComponent<Rigidbody>();
             inputHandler = GetComponent<BallInputHandler>();
             inputHandler.enabled = false;
             inputHandler.MoveHandler = val => { inputDirection = val; };
             inputHandler.JumpHandler = () => { isJumping = isInJumpWindow; };
             inputHandler.enabled = true;
-            for (int i = 0; i < tracks.childCount; i++)
-                trackList.Add(tracks.GetChild(i).GetComponent<SplineContainer>());
-            currentTrack = (trackList.Count - 1) / 2;
+            if (ControlMode == ControlMode.Tracks)
+            {
+                for (int i = 0; i < tracks.childCount; i++)
+                    trackList.Add(tracks.GetChild(i).GetComponent<SplineContainer>());
+                currentTrack = (trackList.Count - 1) / 2;
+            }
         }
 
         void Start()
@@ -137,7 +140,7 @@ namespace Ball
             }
             if (isJumping && isJumpReady)
             {
-                Y = jumpImpulse;
+                Y = Mathf.Sqrt(2 * gravity * jumpHeight);
                 StartCoroutine(JumpCooldown());
                 isJumping = false;
             }
@@ -230,6 +233,7 @@ namespace Ball
         {
             rb.linearVelocity = new Vector3(0, 0, 0);
             transform.position = spawnPoint.position;
+            // cam.GetComponent<CinemachinePositionComposer>()
         }
 
         #endregion

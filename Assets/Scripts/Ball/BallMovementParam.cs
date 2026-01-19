@@ -10,7 +10,7 @@ namespace Ball
         public float accelHorizontalInAir;
         public float frictionHorizontal;
         public float frictionHorizontalInAir;
-        public float jumpImpulse;
+        public float jumpHeight;
         public float jumpCooldown;
         public float gravity;
         public float coyoteTimeDuration;
