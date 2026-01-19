@@ -165,7 +165,7 @@ namespace Ball
                     {
                         currentTrack = Math.Clamp(currentTrack + Math.Sign(inputDirection.x), 0, trackList.Count - 1);
                         isMoveReset = false;
-                        Debug.Log(currentTrack);
+                        Debug.Log($"SetTrack: {currentTrack}");
                     }
                 }
                 else
