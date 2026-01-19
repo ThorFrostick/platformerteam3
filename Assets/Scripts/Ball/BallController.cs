@@ -228,7 +228,8 @@ namespace Ball
 
         public void Reset()
         {
-            
+            rb.linearVelocity = new Vector3(0, 0, 0);
+            transform.position = spawnPoint.position;
         }
 
         #endregion
