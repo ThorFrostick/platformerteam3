@@ -4,16 +4,16 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
-    public int score = 0;
+    private int score = 0;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     // Timer value
     public float baseRate = 0.1f;
-    public float accelPerRate = 0.15f;
-    public float maxRate = 50f;
+    public float accelPerRate = 0.01f;
+    public float maxRate = 10f;
 
-    public float elapsedTime;
-    public float accumulator;
+    private float elapsedTime;
+    private float accumulator;
 
     private void Awake()
     {
@@ -25,6 +25,7 @@ public class ScoreManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
     }
 
     public void Update()
@@ -38,14 +39,16 @@ public class ScoreManager : MonoBehaviour
         //Debug.Log("Score: " + score);
     }
 
+    public int GetScore() { return score; }
+
     void AddTimeScore()
     {
         elapsedTime += Time.deltaTime;
-        float rate = baseRate + (accelPerRate * elapsedTime * elapsedTime);
+        float rate = baseRate + (accelPerRate * elapsedTime);
         rate = Mathf.Min(rate, maxRate);
 
         accumulator += rate * Time.deltaTime;
-        Debug.Log(accumulator);
+        //Debug.Log(accumulator);
         if (accumulator >= 1f)
         {
             int pointsToAdd = Mathf.FloorToInt(accumulator);
