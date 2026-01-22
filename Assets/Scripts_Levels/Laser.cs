@@ -11,6 +11,7 @@ public class Laser : MonoBehaviour
             //If we are colliding with the Player, 
             // -- TESTING PURPOSES ONLY --
             //reset the Player to the beginning of the level.
+            ScoreManager.Instance.ResetScore();
             collision.GetComponent<BallController>()?.Reset();
         }
     }
