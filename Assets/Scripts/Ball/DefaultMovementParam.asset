@@ -24,3 +24,4 @@ MonoBehaviour:
   groundCheckCenter: {x: 0, y: -0.5, z: 0}
   groundCheckRange: 0.2
   trackSwitchingSpeed: 5
+  reAccelRate: 1

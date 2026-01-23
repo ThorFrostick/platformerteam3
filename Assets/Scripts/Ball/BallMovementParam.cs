@@ -17,5 +17,6 @@ namespace Ball
         public Vector3 groundCheckCenter;
         public float groundCheckRange;
         public float trackSwitchingSpeed;
+        public float reAccelRate;
     }
 }
