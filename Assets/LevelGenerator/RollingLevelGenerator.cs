@@ -115,7 +115,7 @@ public class RollingLevelGenerator : MonoBehaviour
         rowRoots.Enqueue(rowRoot);
     }
 
-    // Generate one row from the sky
+    // Generate one row from the sky  ------------------------------------------------------ Need fix the height
     void GenerateRowDrop(int rowIndex)
     {
         var rowRoot = new GameObject($"Row_{rowIndex}");
@@ -138,6 +138,7 @@ public class RollingLevelGenerator : MonoBehaviour
         rowRoots.Enqueue(rowRoot);
     }
 
+    // Drop passed row
     IEnumerator DropRow(Transform t, Vector3 targetPos, float time)
     {
         Vector3 start = t.position;
@@ -148,7 +149,7 @@ public class RollingLevelGenerator : MonoBehaviour
             elapsed += Time.deltaTime;
             float u = Mathf.Clamp01(elapsed / time);
 
-            // 简单的 easeOut（落下更自然）
+            // easeOut
             float eased = 1f - Mathf.Pow(1f - u, 3f);
 
             t.position = Vector3.Lerp(start, targetPos, eased);
