@@ -49,7 +49,7 @@ namespace Ball
         #region Status
         bool isOnGround;
         bool isInJumpWindow;
-        bool isJumpReady = true;
+        bool isJumpReady;
         float targetSpeed;
         
         //For Tracks
@@ -93,7 +93,7 @@ namespace Ball
             inputHandler = GetComponent<BallInputHandler>();
             inputHandler.enabled = false;
             inputHandler.MoveHandler = val => { inputDirection = val; };
-            inputHandler.JumpHandler = () => { isJumping = isInJumpWindow; };
+            inputHandler.JumpHandler = () => { isJumping = isInJumpWindow & isJumpReady; };
             inputHandler.enabled = true;
             if (ControlMode == ControlMode.Tracks)
             {
@@ -143,11 +143,12 @@ namespace Ball
                     StopCoroutine(coyoteTimerInProgress);
                 coyoteTimerInProgress = StartCoroutine(CoyoteTimer());
             }
-            if (isJumping && isJumpReady)
+            if (isJumping)
             {
                 Y = Mathf.Sqrt(2 * gravity * jumpHeight);
-                StartCoroutine(JumpCooldown());
                 isJumping = false;
+                isJumpReady = false;
+                StartCoroutine(JumpCooldown());
             }
             Y -= gravity * Time.fixedDeltaTime;
 
@@ -199,7 +200,6 @@ namespace Ball
         
         IEnumerator JumpCooldown()
         {
-            isJumpReady = false;
             yield return new WaitForSeconds(jumpCooldown);
             isJumpReady = true;
         }
