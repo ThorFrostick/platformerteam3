@@ -15,7 +15,7 @@ public class RollingLevelGenerator : MonoBehaviour
     [Header("Grid")]
     public int columns = 5;          // colume length
     public float tileSize = 1.5f;    // tile distance
-    public int keptRows = 7;         // row on platform
+    public int keptRows = 7;         // row on platforma
 
     [Header("Player + Progress")]
     public Transform player;
@@ -87,7 +87,7 @@ public class RollingLevelGenerator : MonoBehaviour
         // If the current rows didn't reach the constant number of row, generate new row
         while (nextRowIndex < desiredLastRowExclusive)
         {
-            GenerateRowInstant(nextRowIndex++);
+            GenerateRowDrop(nextRowIndex++);
         }
 
         // Delete the old row if current row number is bigger than keptRows number
@@ -125,12 +125,16 @@ public class RollingLevelGenerator : MonoBehaviour
         Vector3 targetPos = new Vector3(0f, 0f, rowIndex * tileSize);
         rowRoot.transform.position = targetPos + Vector3.up * spawnHeight;
 
+        Debug.Log($"[GenerateRowDrop] after set sky pos: row={rowIndex}, pos={rowRoot.transform.position}, target={targetPos}, spawnHeight={spawnHeight}");
+
+
         var types = BuildRowTypes();
         for (int col = 0; col < columns; col++)
         {
             if (types[col] == TileType.Empty) continue;
             SpawnTile(types[col], rowIndex, col, rowRoot.transform, yOffset: 0f);
         }
+
 
         // drop animation
         StartCoroutine(DropRow(rowRoot.transform, targetPos, dropTime));
@@ -141,6 +145,8 @@ public class RollingLevelGenerator : MonoBehaviour
     // Drop passed row
     IEnumerator DropRow(Transform t, Vector3 targetPos, float time)
     {
+        Debug.Log($"[DropRow] start pos={t.position}, target={targetPos}");
+
         Vector3 start = t.position;
         float elapsed = 0f;
 
@@ -204,6 +210,8 @@ public class RollingLevelGenerator : MonoBehaviour
             Debug.LogWarning($"No prefab set for TileType: {type}");
             return;
         }
+
+        Debug.Log($"[SpawnTile] type={type} row={rowIndex} col={col} yOffset={yOffset} rowRootY={rowRoot.position.y}");
 
         float x = (col - (columns - 1) * 0.5f) * tileSize;
         float zLocal = 0f; // z = rowIndex * tileSize

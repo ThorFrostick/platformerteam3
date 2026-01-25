@@ -13,7 +13,7 @@ public abstract class TileBase : MonoBehaviour
         this.row = row;
         this.col = col;
 
-        transform.position = new Vector3(col * tileSize, 0f, row * tileSize);
+        //transform.position = new Vector3(col * tileSize, 0f, row * tileSize);
     }
 
     public virtual void OnPlayerEnter(GameObject player) { }
