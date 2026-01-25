@@ -1,3 +1,4 @@
+using Ball;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,8 +11,9 @@ public class LevelComplete : MonoBehaviour
         {
             //If we are colliding with the Player, display the Level Complete screen.
             // -- TESTING PURPOSES ONLY --
-            Debug.Log("Level Complete");
-            SceneManager.LoadScene("EndMenu");
+            //Debug.Log("Level Complete");
+            // SceneManager.LoadScene("EndMenu");
+            collision.GetComponent<BallController>()?.ResetSpeed();
         }
     }
 }

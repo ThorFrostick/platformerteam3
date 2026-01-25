@@ -436,6 +436,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerHUD
       objectReference: {fileID: 0}
+    - target: {fileID: 1587581864688040278, guid: 8149e81f4c64c764c8f3f41c9eea15ab, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Level_2
+      objectReference: {fileID: 0}
     - target: {fileID: 2523896099332985591, guid: 8149e81f4c64c764c8f3f41c9eea15ab, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

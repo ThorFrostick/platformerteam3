@@ -17,6 +17,9 @@ public class RollingLevelGenerator : MonoBehaviour
     public float tileSize = 1.5f;    // tile distance
     public int keptRows = 7;         // row on platforma
 
+    [Header("World Anchor")]
+    public Transform worldAnchor;
+
     [Header("Player + Progress")]
     public Transform player;
     public int rowsBehindPlayer = 1;
@@ -109,7 +112,11 @@ public class RollingLevelGenerator : MonoBehaviour
     {
         var rowRoot = new GameObject($"Row_{rowIndex}");
         rowRoot.transform.SetParent(tilesParent, worldPositionStays: false);
+        //rowRoot.transform.SetParent(worldAnchor, worldPositionStays: true);
+
         rowRoot.transform.position = new Vector3(0f, 0f, rowIndex * tileSize);
+        //Vector3 anchorPos = worldAnchor ? worldAnchor.position : Vector3.zero;
+        //Vector3 targetPos = anchorPos + new Vector3(0f, 0f, rowIndex * tileSize);
 
         var types = BuildRowTypes();
         for (int col = 0; col < columns; col++)
@@ -126,9 +133,12 @@ public class RollingLevelGenerator : MonoBehaviour
     {
         var rowRoot = new GameObject($"Row_{rowIndex}");
         rowRoot.transform.SetParent(tilesParent, worldPositionStays: false);
+        //rowRoot.transform.SetParent(worldAnchor, worldPositionStays: true);
 
         // Set the row on the sky
         Vector3 targetPos = new Vector3(0f, 0f, rowIndex * tileSize);
+        //Vector3 anchorPos = worldAnchor ? worldAnchor.position : Vector3.zero;
+        //Vector3 targetPos = anchorPos + new Vector3(0f, 0f, rowIndex * tileSize);
         rowRoot.transform.position = targetPos + Vector3.up * spawnHeight;
 
         //Debug.Log($"[GenerateRowDrop] after set sky pos: row={rowIndex}, pos={rowRoot.transform.position}, target={targetPos}, spawnHeight={spawnHeight}");

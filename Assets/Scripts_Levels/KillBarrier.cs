@@ -12,7 +12,7 @@ public class KillBarrier : MonoBehaviour
             // -- TESTING PURPOSES ONLY --
             ScoreManager.Instance.ResetScore();
             Debug.Log("Game Over");
-            collision.GetComponent<BallController>()?.Reset();
+            collision.GetComponent<PlayerDeath>()?.Die();
         }
     }
 }

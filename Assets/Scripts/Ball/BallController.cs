@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Input;
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -240,6 +241,12 @@ namespace Ball
             rb.linearVelocity = new Vector3(0, 0, 0);
             transform.position = spawnPoint.position;
             // cam.GetComponent<CinemachinePositionComposer>()
+        }
+
+        public void ResetSpeed()
+        {
+            targetSpeed = initialSpeed;
+            accelForward = 0.1f;
         }
 
         #endregion
