@@ -172,8 +172,16 @@ public class RollingLevelGenerator : MonoBehaviour
         safeCol = MoveSafeCol(safeCol);
 
         TileType[] row = new TileType[columns];
-        for (int c = 0; c < columns; c++)
-            row[c] = WeightedPick();
+        for (int c = 0; c < columns; c++) { 
+            if(nextRowIndex < 5)
+            {
+                row[c] = OnlySafeTilePick();
+            }
+            else
+            {
+                row[c] = WeightedPick();
+            }
+        }
 
         // Make sure there is a safe path
         if (row[safeCol] == TileType.Empty) row[safeCol] = TileType.Normal;
@@ -239,6 +247,11 @@ public class RollingLevelGenerator : MonoBehaviour
         if (roll < 25) step = -1;
         else if (roll < 50) step = +1;
         return Mathf.Clamp(current + step, 0, columns - 1);
+    }
+
+    TileType OnlySafeTilePick()
+    {
+        return TileType.Normal;
     }
 
     TileType WeightedPick()
