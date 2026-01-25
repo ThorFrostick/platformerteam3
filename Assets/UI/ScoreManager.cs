@@ -1,42 +1,53 @@
-using Unity.Hierarchy;
+﻿using System;
 using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-    public static ScoreManager Instance;
-    private int score = 0;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public static ScoreManager Instance { get; private set; }
 
-    // Timer value
-    public float baseRate = 0.1f;
-    public float accelPerRate = 0.01f;
-    public float maxRate = 10f;
+    [Header("Score")]
+    [SerializeField] private int score = 0;
+    public int Score => score;
 
-    private float elapsedTime;
-    private float accumulator;
+    // Score change event for UI
+    public event Action<int> OnScoreChanged;
+
+    [Header("Time-based Scoring")]
+    [SerializeField] private bool countTimeScore = true;
+
+    [SerializeField] private float baseRate = 1f;      // base point/sec
+    [SerializeField] private float accelPerSecond = 0.2f; // acceleration speed
+    [SerializeField] private float maxRate = 10f;        // max point/sec
+    [SerializeField] private float warmupSeconds = 0f;   // warmup time
+
+    private float elapsedTime = 0f;
+    private float accumulator = 0f;
+    private float lastRate = 0f;
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+        Instance = this;
+
+        ResetScore();
 
     }
 
-    public void Update()
+    private void Update()
     {
-        AddTimeScore();
+        if (countTimeScore)
+            AddTimeScore();
     }
 
     public void AddScore(int amount)
     {
+        if (amount == 0) return;
         score += amount;
-        //Debug.Log("Score: " + score);
+        OnScoreChanged?.Invoke(score);
     }
 
     public int GetScore() { return score; }
@@ -44,17 +55,24 @@ public class ScoreManager : MonoBehaviour
     void AddTimeScore()
     {
         elapsedTime += Time.deltaTime;
-        float rate = baseRate + (accelPerRate * elapsedTime);
+
+        // warmup rate
+        float t = Mathf.Max(0f, elapsedTime - warmupSeconds);
+
+        // rate = base + accel * t
+        float rate = baseRate + accelPerSecond * t;
         rate = Mathf.Min(rate, maxRate);
 
         accumulator += rate * Time.deltaTime;
-        //Debug.Log(accumulator);
+
         if (accumulator >= 1f)
         {
             int pointsToAdd = Mathf.FloorToInt(accumulator);
-            score += pointsToAdd;
             accumulator -= pointsToAdd;
+            AddScore(pointsToAdd); // use AddScore to trigger OnScoreChanged
         }
+
+        lastRate = rate;
     }
 
     public void ResetScore()
@@ -62,5 +80,12 @@ public class ScoreManager : MonoBehaviour
         score = 0;
         elapsedTime = 0f;
         accumulator = 0f;
+        lastRate = 0f;
+        OnScoreChanged?.Invoke(score);
+    }
+
+    public void SetTimeScoring(bool enabled)
+    {
+        countTimeScore = enabled;
     }
 }

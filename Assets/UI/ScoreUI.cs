@@ -5,9 +5,21 @@ public class ScoreUI : MonoBehaviour
 {
     public TextMeshProUGUI scoreText;
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        scoreText.text = ScoreManager.Instance.GetScore() +"";
+        ScoreManager.Instance.OnScoreChanged += UpdateUI;
+        UpdateUI(ScoreManager.Instance.Score);
+    }
+
+    private void OnDestroy()
+    {
+        if (ScoreManager.Instance != null)
+            ScoreManager.Instance.OnScoreChanged -= UpdateUI;
+    }
+
+    private void UpdateUI(int newScore)
+    {
+        Debug.Log($"UI Update Score: {newScore} ");
+        scoreText.text = $"Score: {newScore}";
     }
 }

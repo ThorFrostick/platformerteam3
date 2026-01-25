@@ -20,9 +20,15 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Check the game start state
-        ResumeGame();
+        Time.timeScale = 1f;
         if (deathMenu) deathMenu.SetActive(false);
         isGameOver = false;
+
+        ScoreManager.Instance.ResetScore();
+        ScoreManager.Instance.SetTimeScoring(true);
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Active when player dead
@@ -36,6 +42,7 @@ public class GameManager : MonoBehaviour
 
         // Stop the game
         Time.timeScale = 0f;
+        ScoreManager.Instance.SetTimeScoring(false);
 
         // If using cursor
         Cursor.visible = true;
@@ -44,9 +51,13 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
-        
-        ResumeGame();
 
+        Time.timeScale = 1f;
+        ScoreManager.Instance.SetTimeScoring(true);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        // Restart the current scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -56,11 +67,18 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(mainMenuSceneName);
     }
 
+    public void PauseGame()
+    {
+        Time.timeScale = 0f;
+        ScoreManager.Instance.SetTimeScoring(false);
+    }
+
     public void ResumeGame()
     {
-        // Must update the timeScale before restart
         Time.timeScale = 1f;
         if (deathMenu) deathMenu.SetActive(false);
+
+        ScoreManager.Instance.SetTimeScoring(true);
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;

@@ -126,7 +126,7 @@ public class RollingLevelGenerator : MonoBehaviour
         Vector3 targetPos = new Vector3(0f, 0f, rowIndex * tileSize);
         rowRoot.transform.position = targetPos + Vector3.up * spawnHeight;
 
-        Debug.Log($"[GenerateRowDrop] after set sky pos: row={rowIndex}, pos={rowRoot.transform.position}, target={targetPos}, spawnHeight={spawnHeight}");
+        //Debug.Log($"[GenerateRowDrop] after set sky pos: row={rowIndex}, pos={rowRoot.transform.position}, target={targetPos}, spawnHeight={spawnHeight}");
 
 
         var types = BuildRowTypes();
@@ -146,7 +146,7 @@ public class RollingLevelGenerator : MonoBehaviour
     // Drop passed row
     IEnumerator DropRow(Transform t, Vector3 targetPos, float time)
     {
-        Debug.Log($"[DropRow] start pos={t.position}, target={targetPos}");
+        //Debug.Log($"[DropRow] start pos={t.position}, target={targetPos}");
 
         Vector3 start = t.position;
         float elapsed = 0f;
@@ -220,7 +220,7 @@ public class RollingLevelGenerator : MonoBehaviour
             return;
         }
 
-        Debug.Log($"[SpawnTile] type={type} row={rowIndex} col={col} yOffset={yOffset} rowRootY={rowRoot.position.y}");
+        //Debug.Log($"[SpawnTile] type={type} row={rowIndex} col={col} yOffset={yOffset} rowRootY={rowRoot.position.y}");
 
         float x = (col - (columns - 1) * 0.5f) * tileSize;
         float zLocal = 0f; // z = rowIndex * tileSize
