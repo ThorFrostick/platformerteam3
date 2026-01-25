@@ -31,6 +31,7 @@ namespace Ball
         
         #region MovementParam
         Vector3 forwardDirection;
+        float reAccelRate;
         float maxHorizontalSpeed;
         float accelHorizontal;
         float accelHorizontal_Air;
@@ -49,6 +50,7 @@ namespace Ball
         bool isOnGround;
         bool isInJumpWindow;
         bool isJumpReady = true;
+        float targetSpeed;
         
         //For Tracks
         int currentTrack;
@@ -81,6 +83,7 @@ namespace Ball
             groundCheckCenter = param.groundCheckCenter;
             groundCheckRange = param.groundCheckRange;
             trackSwitchingSpeed = param.trackSwitchingSpeed;
+            reAccelRate = param.reAccelRate;
         }
 
         void Awake()
@@ -105,6 +108,7 @@ namespace Ball
             forwardDirection = forwardIndicator.forward;
             ReadMovementParam(movementParam);
             transform.rotation = Quaternion.LookRotation(forwardDirection, Vector3.up);
+            targetSpeed = initialSpeed;
             rb.linearVelocity = transform.forward * initialSpeed;
             isJumpReady = true;
             isMoveReset = true;
@@ -178,8 +182,8 @@ namespace Ball
                 targetPosition = CalcPosition(trackList[currentTrack], transform.position, forwardDirection);
                 X = CalcSpeed();
             }
-
-            Z += accelForward * Time.fixedDeltaTime;
+            targetSpeed += accelForward * Time.fixedDeltaTime;
+            Z = Mathf.Lerp(Z, targetSpeed, Time.fixedDeltaTime * reAccelRate);
             rb.linearVelocity = X * transform.right+ Y * transform.up + Z * forwardDirection;
         }
 
@@ -232,6 +236,7 @@ namespace Ball
 
         public void Reset()
         {
+            targetSpeed = initialSpeed;
             rb.linearVelocity = new Vector3(0, 0, 0);
             transform.position = spawnPoint.position;
             // cam.GetComponent<CinemachinePositionComposer>()
