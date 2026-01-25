@@ -29,6 +29,10 @@ public class RollingLevelGenerator : MonoBehaviour
     public List<TileEntry> tiles;
     public Transform tilesParent;
 
+    [Header("Coin Prefab")]
+    public GameObject coinPrefab;
+    public float coinHeight = 0.6f;
+
     [Header("Generate Type Weights")]
     // Random generate weight
     public float wEmpty = 0.25f;
@@ -45,6 +49,7 @@ public class RollingLevelGenerator : MonoBehaviour
     [Header("Random")]
     public int seed = 0;
     public bool useRandomSeed = true;
+
 
     // internal
     private System.Random rng;
@@ -133,7 +138,11 @@ public class RollingLevelGenerator : MonoBehaviour
         for (int col = 0; col < columns; col++)
         {
             if (types[col] == TileType.Empty) continue;
-            SpawnTile(types[col], rowIndex, col, rowRoot.transform, yOffset: 0f);
+            GameObject newTile = SpawnTile(types[col], rowIndex, col, rowRoot.transform, yOffset: 0f);
+            if (newTile != null && col == safeCol)
+            {
+                SpawnCoinOnTile(newTile, types[col]);
+            }
         }
 
 
@@ -211,6 +220,7 @@ public class RollingLevelGenerator : MonoBehaviour
         return row;
     }
 
+    /*
     // Spawn a single tile at 000
     void SpawnTile(TileType type, int rowIndex, int col, Transform rowRoot, float yOffset)
     {
@@ -239,6 +249,35 @@ public class RollingLevelGenerator : MonoBehaviour
 
         tile.Init(rowIndex, col, tileSize);
     }
+    */
+
+    GameObject SpawnTile(TileType type, int rowIndex, int col, Transform rowRoot, float yOffset)
+    {
+        if (!prefabMap.TryGetValue(type, out var prefab) || prefab == null)
+        {
+            Debug.LogWarning($"No prefab set for TileType: {type}");
+            return null;
+        }
+
+        float x = (col - (columns - 1) * 0.5f) * tileSize;
+        Vector3 localPos = new Vector3(x, yOffset, 0f);
+
+        GameObject NewTile = Instantiate(prefab, rowRoot);
+        NewTile.transform.localPosition = localPos;
+        NewTile.transform.localRotation = Quaternion.identity;
+
+        TileBase tile = NewTile.GetComponent<TileBase>();
+        if (tile == null)
+        {
+            Debug.LogError($"Prefab {prefab.name} has no TileBase on root.");
+            Destroy(NewTile);
+            return null;
+        }
+
+        tile.Init(rowIndex, col, tileSize);
+        return NewTile;
+    }
+
 
     int MoveSafeCol(int current)
     {
@@ -276,4 +315,18 @@ public class RollingLevelGenerator : MonoBehaviour
             if (row[i] == t) n++;
         return n;
     }
+
+
+    // Generate a coin on the selected tile
+    void SpawnCoinOnTile(GameObject tileGO, TileType tileType)
+    {
+        if (coinPrefab == null) return;
+        if (tileType != TileType.Normal) return;
+
+
+        GameObject coin = Instantiate(coinPrefab, tileGO.transform);
+        coin.transform.localPosition = Vector3.up * coinHeight;
+        coin.transform.localRotation = Quaternion.identity;
+    }
+
 }
