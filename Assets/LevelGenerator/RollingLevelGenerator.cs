@@ -33,8 +33,9 @@ public class RollingLevelGenerator : MonoBehaviour
     // Random generate weight
     public float wEmpty = 0.25f;
     public float wNormal = 0.55f;
-    public float wJump = 0.12f;
-    public float wLaser = 0.08f;
+    public float wJump = 0.13f;
+    public float wLaser = 0.00f;
+    public float wFire = 0.07f;
 
     [Header("Tpye limit")]
     [Range(0f, 1f)] public float laserMaxPerRowRatio = 0.2f; // Only One laser in a row
@@ -115,7 +116,7 @@ public class RollingLevelGenerator : MonoBehaviour
         rowRoots.Enqueue(rowRoot);
     }
 
-    // Generate one row from the sky  ------------------------------------------------------ Need fix the height
+    // Generate one row from the sky
     void GenerateRowDrop(int rowIndex)
     {
         var rowRoot = new GameObject($"Row_{rowIndex}");
@@ -242,7 +243,7 @@ public class RollingLevelGenerator : MonoBehaviour
 
     TileType WeightedPick()
     {
-        double total = wEmpty + wNormal + wJump + wLaser;
+        double total = wEmpty + wNormal + wJump + wFire;
         double r = rng.NextDouble() * total;
 
         if (r < wEmpty) return TileType.Empty;
@@ -252,7 +253,7 @@ public class RollingLevelGenerator : MonoBehaviour
         r -= wNormal;
 
         if (r < wJump) return TileType.Jump;
-        return TileType.Laser;
+        return TileType.Fire;
     }
 
     int Count(TileType[] row, TileType t)

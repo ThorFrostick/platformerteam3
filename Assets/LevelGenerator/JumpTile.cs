@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public class NormalTile : TileBase
+public class JumpTile : TileBase
 {
     private void Reset() => type = TileType.Jump;
 }
