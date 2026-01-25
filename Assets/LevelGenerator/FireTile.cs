@@ -58,7 +58,7 @@ public class FireTile : TileBase
         // -- TESTING PURPOSES ONLY --
         //ScoreManager.Instance.ResetScore();
         Debug.Log("Killed by fire tile");
-        player.GetComponent<BallController>()?.Reset();
+        player.GetComponent<PlayerDeath>()?.Die();
 
     }
 
