@@ -1,5 +1,6 @@
 using Ball;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Laser : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class Laser : MonoBehaviour
             // -- TESTING PURPOSES ONLY --
             //reset the Player to the beginning of the level.
             ScoreManager.Instance.ResetScore();
-            collision.GetComponent<BallController>()?.Reset();
+            collision.GetComponent<PlayerDeath>()?.Die();
         }
     }
 }
