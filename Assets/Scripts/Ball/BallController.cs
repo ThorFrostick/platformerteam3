@@ -21,6 +21,7 @@ namespace Ball
         #endregion
         
         #region Resources
+        public Transform ball;
         public Transform forwardIndicator;
         public Transform tracks;
         public BallMovementParam movementParam;
@@ -187,6 +188,8 @@ namespace Ball
             targetSpeed += accelForward * Time.fixedDeltaTime;
             Z = Mathf.Lerp(Z, targetSpeed, Time.fixedDeltaTime * reAccelRate);
             rb.linearVelocity = X * transform.right+ Y * transform.up + Z * forwardDirection;
+
+            ball.rotation *= Quaternion.Euler(Z / (2*Mathf.PI) * 360 * Time.fixedDeltaTime, 0, 0);
         }
 
         Coroutine coyoteTimerInProgress;
