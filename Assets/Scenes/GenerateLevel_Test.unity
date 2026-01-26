@@ -136,8 +136,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 491624118}
     - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
+      propertyPath: ControlMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: accelForward
-      value: 1
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: initialSpeed
@@ -232,6 +236,7 @@ MonoBehaviour:
   columns: 5
   tileSize: 1.5
   keptRows: 10
+  worldAnchor: {fileID: 0}
   player: {fileID: 144300618}
   rowsBehindPlayer: 1
   spawnHeight: 3
@@ -249,10 +254,10 @@ MonoBehaviour:
   coinPrefab: {fileID: 6389742279696980711, guid: 06eac7b6caaebb74f83f18a30fed584a, type: 3}
   coinHeight: 0.6
   wEmpty: 0.25
-  wNormal: 0.55
-  wJump: 0.12
+  wNormal: 0.65
+  wJump: 0
   wLaser: 0
-  wFire: 0.08
+  wFire: 0.2
   laserMaxPerRowRatio: 0.2
   forbidLaserOnSafePath: 1
   forbidLaserAdjacentToSafePath: 0

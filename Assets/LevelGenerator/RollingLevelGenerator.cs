@@ -39,10 +39,10 @@ public class RollingLevelGenerator : MonoBehaviour
     [Header("Generate Type Weights")]
     // Random generate weight
     public float wEmpty = 0.25f;
-    public float wNormal = 0.55f;
-    public float wJump = 0.13f;
+    public float wNormal = 0.65f;
+    public float wJump = 0.0f;
     public float wLaser = 0.00f;
-    public float wFire = 0.07f;
+    public float wFire = 0.2f;
 
     [Header("Tpye limit")]
     [Range(0f, 1f)] public float laserMaxPerRowRatio = 0.2f; // Only One laser in a row
@@ -53,14 +53,18 @@ public class RollingLevelGenerator : MonoBehaviour
     public int seed = 0;
     public bool useRandomSeed = true;
 
-
     // internal
     private System.Random rng;
     private Dictionary<TileType, GameObject> prefabMap;
 
     // Row management
     private int nextRowIndex = 0;
+    // Next safe tile index
     private int safeCol = 2;
+    // Current safe tile index
+    private int safeColThisRow = 2;
+    // Current safe set (size 1 or 2)
+    private bool[] safeMaskThisRow;
 
     // Save each row data, use for delete
     private readonly Queue<GameObject> rowRoots = new();
@@ -149,7 +153,7 @@ public class RollingLevelGenerator : MonoBehaviour
         {
             if (types[col] == TileType.Empty) continue;
             GameObject newTile = SpawnTile(types[col], rowIndex, col, rowRoot.transform, yOffset: 0f);
-            if (newTile != null && col == safeCol)
+            if (newTile != null && col == safeColThisRow)
             {
                 SpawnCoinOnTile(newTile, types[col]);
             }
@@ -185,33 +189,70 @@ public class RollingLevelGenerator : MonoBehaviour
         t.position = targetPos;
     }
 
-    // Random generate a row of different tiles
+    // Random generate a row of different tiles 
     TileType[] BuildRowTypes()
     {
-        safeCol = MoveSafeCol(safeCol);
+        // Decide the current row safeCol and the next row cafeCol
+        int main = safeCol;
+        safeColThisRow = main;
 
+        // Decide next safe col from: main-1 / main / main+1   
+        int roll = rng.Next(0, 100);
+        int step = 0;
+        if (roll < 25) step = -1;       // 25% to left
+        else if (roll < 50) step = +1;  // 25% to right
+
+        int nextMain = Mathf.Clamp(main + step, 0, columns - 1);
+
+        // Build safe columns based on whether the route goes straight(1) or turns(2).
+        safeMaskThisRow = new bool[columns];
+        safeMaskThisRow[main] = true;
+
+        if (nextMain != main)
+            safeMaskThisRow[nextMain] = true; // Make one more safeCol if safeCol on the next row is on the left or on the right
+
+        // Update next row"s safeCol to nextMain
+        safeCol = nextMain;
+
+        // Generate the current row tiles
         TileType[] row = new TileType[columns];
-        for (int c = 0; c < columns; c++) { 
-            if(nextRowIndex < 5)
+
+        for (int c = 0; c < columns; c++)
+        {
+            // Make the first 5 rows all Normal Tiles
+            bool early = (nextRowIndex < 5);
+
+            if (safeMaskThisRow[c])
             {
-                row[c] = OnlySafeTilePick();
+                // Safe columns must be Normal Tile
+                row[c] = TileType.Normal;
             }
             else
             {
-                row[c] = WeightedPick();
+                row[c] = early ? OnlySafeTilePick() : WeightedPick();
             }
         }
 
-        // Make sure there is a safe path
-        if (row[safeCol] == TileType.Empty) row[safeCol] = TileType.Normal;
-        if (forbidLaserOnSafePath && row[safeCol] == TileType.Laser) row[safeCol] = TileType.Normal;
+        // Limit laser logic ------------------------------------------
+        // Not generate laser on safeCol
+        if (forbidLaserOnSafePath)
+        {
+            for (int c = 0; c < columns; c++)
+                if (safeMaskThisRow[c] && row[c] == TileType.Laser)
+                    row[c] = TileType.Normal;
+        }
 
         if (forbidLaserAdjacentToSafePath)
         {
-            int left = safeCol - 1;
-            int right = safeCol + 1;
-            if (left >= 0 && row[left] == TileType.Laser) row[left] = TileType.Empty;
-            if (right < columns && row[right] == TileType.Laser) row[right] = TileType.Empty;
+            for (int c = 0; c < columns; c++)
+            {
+                if (!safeMaskThisRow[c]) continue;
+
+                int left = c - 1;
+                int right = c + 1;
+                if (left >= 0 && row[left] == TileType.Laser) row[left] = TileType.Empty;
+                if (right < columns && row[right] == TileType.Laser) row[right] = TileType.Empty;
+            }
         }
 
         // Limited the number of laser tile
@@ -222,13 +263,14 @@ public class RollingLevelGenerator : MonoBehaviour
         {
             for (int c = 0; c < columns && Count(row, TileType.Laser) > maxLaser; c++)
             {
-                if (row[c] == TileType.Laser && c != safeCol)
+                if (row[c] == TileType.Laser && !safeMaskThisRow[c])
                     row[c] = (rng.NextDouble() < 0.6) ? TileType.Empty : TileType.Normal;
             }
         }
 
         return row;
     }
+
 
     /*
     // Spawn a single tile at 000
@@ -305,7 +347,7 @@ public class RollingLevelGenerator : MonoBehaviour
 
     TileType WeightedPick()
     {
-        double total = wEmpty + wNormal + wJump + wFire;
+        double total = wEmpty + wNormal + wFire;
         double r = rng.NextDouble() * total;
 
         if (r < wEmpty) return TileType.Empty;
@@ -314,7 +356,7 @@ public class RollingLevelGenerator : MonoBehaviour
         if (r < wNormal) return TileType.Normal;
         r -= wNormal;
 
-        if (r < wJump) return TileType.Jump;
+        //if (r < wJump) return TileType.Jump;
         return TileType.Fire;
     }
 

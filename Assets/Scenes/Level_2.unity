@@ -2344,10 +2344,10 @@ MonoBehaviour:
   coinPrefab: {fileID: 6389742279696980711, guid: 06eac7b6caaebb74f83f18a30fed584a, type: 3}
   coinHeight: 0.6
   wEmpty: 0.25
-  wNormal: 0.55
-  wJump: 0.12
+  wNormal: 0.65
+  wJump: 0
   wLaser: 0
-  wFire: 0.08
+  wFire: 0.2
   laserMaxPerRowRatio: 0.2
   forbidLaserOnSafePath: 1
   forbidLaserAdjacentToSafePath: 0
