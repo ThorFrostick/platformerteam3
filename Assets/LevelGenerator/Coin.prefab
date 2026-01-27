@@ -98,6 +98,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreValue: 100
   rotateSpeed: 90
+  pickupSound: {fileID: 8300000, guid: 2294ee5b87e984e49bc918cb2dfdf3b5, type: 3}
+  volume: 0.812
 --- !u!65 &9167547021736215561
 BoxCollider:
   m_ObjectHideFlags: 0
