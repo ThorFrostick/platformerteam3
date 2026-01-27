@@ -141,7 +141,7 @@ PrefabInstance:
       objectReference: {fileID: 491624118}
     - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: accelForward
-      value: 0.5
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: movementParam
