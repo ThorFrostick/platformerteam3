@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8057254904412614560}
   - component: {fileID: -1087560661651569611}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: NormalTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: 2543203572398820891}
   - component: {fileID: 2495762801715621634}
   - component: {fileID: 9108499410542992629}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}

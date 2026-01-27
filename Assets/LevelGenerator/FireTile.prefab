@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3601023357711034936}
   - component: {fileID: 5328811788248427910}
   - component: {fileID: 7766682089078401694}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8057254904412614560}
   - component: {fileID: 9096621289250936086}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: FireTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 4456805324403668631}
   - component: {fileID: 2065281351706518510}
   - component: {fileID: 4534969301610334947}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Flame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 17045237666659802}
   - component: {fileID: 8908535092493575631}
   - component: {fileID: 4048028989438641750}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SoundBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -403,6 +403,10 @@ PrefabInstance:
     - target: {fileID: 2016345063092062355, guid: ad407ba64ee0a7443b4a61ffbe46074e, type: 3}
       propertyPath: m_Name
       value: VFX_Fire1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016345063092062355, guid: ad407ba64ee0a7443b4a61ffbe46074e, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8370799383966701890, guid: ad407ba64ee0a7443b4a61ffbe46074e, type: 3}
       propertyPath: m_LocalScale.x

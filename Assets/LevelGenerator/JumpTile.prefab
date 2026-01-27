@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8057254904412614560}
   - component: {fileID: 1072018118986729241}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: JumpTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: 1352308383125620054}
   - component: {fileID: 943530907214419258}
   - component: {fileID: 6845493097409166320}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
