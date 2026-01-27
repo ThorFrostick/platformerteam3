@@ -17,7 +17,7 @@ MonoBehaviour:
   accelHorizontalInAir: 8
   frictionHorizontal: 10
   frictionHorizontalInAir: 2
-  jumpHeight: 4
+  jumpHeight: 2
   jumpCooldown: 1
   gravity: 20
   coyoteTimeDuration: 0.2
