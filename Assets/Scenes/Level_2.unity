@@ -1467,7 +1467,7 @@ MonoBehaviour:
   data:
     phaseID: 1
     TrackNumber: 3
-    MaxSpeed: 10
+    MaxSpeed: 20
 --- !u!1001 &534003369
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5495,12 +5495,16 @@ PrefabInstance:
       objectReference: {fileID: 293345646}
     - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: accelForward
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: initialSpeed
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
+      propertyPath: movementParam
+      value: 
+      objectReference: {fileID: 11400000, guid: c176629412df434488472c897f0a6ad6, type: 2}
     - target: {fileID: 3081993663478783747, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: m_Name
       value: Player

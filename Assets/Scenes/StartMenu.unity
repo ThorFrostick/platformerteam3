@@ -257,7 +257,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Level Test
+  m_text: Play Level 2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1020,6 +1020,12 @@ PrefabInstance:
     - target: {fileID: 7648058545665490945, guid: 8149e81f4c64c764c8f3f41c9eea15ab, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7766818062504825394, guid: 8149e81f4c64c764c8f3f41c9eea15ab, type: 3}
+      propertyPath: m_text
+      value: 'Play Level 1
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 8663376355771026775, guid: 8149e81f4c64c764c8f3f41c9eea15ab, type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
