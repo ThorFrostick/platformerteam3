@@ -34,6 +34,7 @@ namespace Ball
         #region MovementParam
         Vector3 forwardDirection;
         float reAccelRate;
+        float maxSpeed = 5000;
         float maxHorizontalSpeed;
         float accelHorizontal;
         float accelHorizontal_Air;
@@ -53,7 +54,7 @@ namespace Ball
         bool isInJumpWindow;
         bool isJumpReady;
         float targetSpeed;
-        
+        string currentPhase;
         //For Tracks
         int currentTrack;
         List<SplineContainer> trackList =  new List<SplineContainer>();
@@ -185,7 +186,7 @@ namespace Ball
                 targetPosition = CalcPosition(trackList[currentTrack], transform.position, forwardDirection);
                 X = CalcSpeed();
             }
-            targetSpeed += accelForward * Time.fixedDeltaTime;
+            targetSpeed = Mathf.Min(targetSpeed + accelForward * Time.fixedDeltaTime, maxSpeed);
             Z = Mathf.Lerp(Z, targetSpeed, Time.fixedDeltaTime * reAccelRate);
             rb.linearVelocity = X * transform.right+ Y * transform.up + Z * forwardDirection;
 
@@ -253,6 +254,22 @@ namespace Ball
         }
 
         #endregion
+
+        public void NotifySwitchPhase(PhaseData data)
+        {
+            if (data.phaseID == currentPhase)
+                return;
+            currentPhase = data.phaseID;
+            if (ControlMode == ControlMode.Tracks)
+            {
+                trackList.Clear();
+                for (int i = 0; i < data.TrackNumber + 2; i++)
+                    trackList.Add(tracks.GetChild(i).GetComponent<SplineContainer>());
+                currentTrack = (trackList.Count - 1) / 2;
+            }
+
+            maxSpeed = data.MaxSpeed;
+        }
 
         void OnDrawGizmosSelected()
         {
