@@ -4,5 +4,6 @@ public enum TileType
     Jump,
     Laser,
     Empty,
-    Fire
+    Fire,
+    Rising
 }

@@ -4802,17 +4802,18 @@ MonoBehaviour:
   - type: 0
     prefab: {fileID: 3029424744165353730, guid: 67a3c273100851d4a82144fa5086f220, type: 3}
   - type: 1
-    prefab: {fileID: 3029424744165353730, guid: 31b54a5af8821634ba59b8742cd2b9d7, type: 3}
+    prefab: {fileID: 3029424744165353730, guid: 782649f5a204497488505be60161da0c, type: 3}
   - type: 4
     prefab: {fileID: 3029424744165353730, guid: cdd18ebe54f097244a5870354a2b9ce6, type: 3}
   tilesParent: {fileID: 2036186030}
   coinPrefab: {fileID: 6389742279696980711, guid: 06eac7b6caaebb74f83f18a30fed584a, type: 3}
   coinHeight: 0.6
   wEmpty: 0.25
-  wNormal: 0.65
-  wJump: 0
+  wNormal: 0.55
+  wJump: 0.1
   wLaser: 0
   wFire: 0.2
+  Rising: 0
   laserMaxPerRowRatio: 0.2
   forbidLaserOnSafePath: 1
   forbidLaserAdjacentToSafePath: 0
@@ -39127,9 +39128,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 445648496859065518, guid: 6901be664a9cad243ab20fba65b69364, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 445648496859065518, guid: 6901be664a9cad243ab20fba65b69364, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 445648496859065518, guid: 6901be664a9cad243ab20fba65b69364, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 445648496859065518, guid: 6901be664a9cad243ab20fba65b69364, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1427853346822633442, guid: 6901be664a9cad243ab20fba65b69364, type: 3}
       propertyPath: m_Name
       value: InGamePlayerHUD
+      objectReference: {fileID: 0}
+    - target: {fileID: 3350614310504015552, guid: 6901be664a9cad243ab20fba65b69364, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3350614310504015552, guid: 6901be664a9cad243ab20fba65b69364, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3350614310504015552, guid: 6901be664a9cad243ab20fba65b69364, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3350614310504015552, guid: 6901be664a9cad243ab20fba65b69364, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8338899724828493429, guid: 6901be664a9cad243ab20fba65b69364, type: 3}
       propertyPath: m_Pivot.x
