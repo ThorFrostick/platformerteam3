@@ -25,7 +25,7 @@ public class RollingLevelGenerator : MonoBehaviour
     public int rowsBehindPlayer = 1;
 
     [Header("Spawn / Drop Animation")]
-    public float spawnHeight = 8f;   // New colume spawn height
+    public float spawnHeight = -4f;   // New colume spawn height
     public float dropTime = 0.35f;   // Colume drop time
 
     [Header("Tile Prefabs")]
@@ -159,7 +159,6 @@ public class RollingLevelGenerator : MonoBehaviour
                 SpawnCoinOnTile(newTile, types[col]);
             }
         }
-
 
         // drop animation
         StartCoroutine(DropRow(rowRoot.transform, targetPos, dropTime));
@@ -374,12 +373,23 @@ public class RollingLevelGenerator : MonoBehaviour
     void SpawnCoinOnTile(GameObject tileGO, TileType tileType)
     {
         if (coinPrefab == null) return;
-        if (tileType != TileType.Normal) return;
 
-
-        GameObject coin = Instantiate(coinPrefab, tileGO.transform);
-        coin.transform.localPosition = Vector3.up * coinHeight;
-        coin.transform.localRotation = Quaternion.identity;
+        if (tileType == TileType.Rising)
+        {
+            //int chance = rng.Next(0, 100);
+            //if(chance < 50)
+            //{
+                GameObject coin = Instantiate(coinPrefab, tileGO.transform);
+                coin.transform.localPosition = Vector3.up * (coinHeight + 1.5f); // 0.6f
+                coin.transform.localRotation = Quaternion.identity;
+            //}
+        } 
+        else if (tileType == TileType.Normal)
+        {
+            GameObject coin01 = Instantiate(coinPrefab, tileGO.transform);
+            coin01.transform.localPosition = Vector3.up * coinHeight;
+            coin01.transform.localRotation = Quaternion.identity;
+        }
     }
 
 }

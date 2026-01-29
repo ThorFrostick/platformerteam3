@@ -4794,7 +4794,7 @@ MonoBehaviour:
   worldAnchor: {fileID: 0}
   player: {fileID: 144300618}
   rowsBehindPlayer: 1
-  spawnHeight: 3
+  spawnHeight: -4
   dropTime: 0.35
   tiles:
   - type: 3

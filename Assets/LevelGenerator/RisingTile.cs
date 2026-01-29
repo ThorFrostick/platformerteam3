@@ -6,13 +6,13 @@ public class RisingTile : TileBase
     [Header("Rise Settings")]
     public Transform visualMesh;
 
-    public float startYOffset = 0.0f;
+    private float startYOffset = -0.6f;
 
-    public float endYOffset = 1.0f;
+    private float endYOffset = 0.7f;
 
-    public float riseTime = 0.5f;  // second
+    private float riseTime = 0.5f;  // second
 
-    public bool riseOnSpawn = true;
+    private bool riseOnSpawn = true;
 
     private bool hasRisen = false;
     private Coroutine routine;
