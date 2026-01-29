@@ -330,6 +330,7 @@ GameObject:
   - component: {fileID: 615493957}
   - component: {fileID: 615493959}
   - component: {fileID: 615493958}
+  - component: {fileID: 615493960}
   m_Layer: 5
   m_Name: Leaderboard Display
   m_TagString: Untagged
@@ -354,7 +355,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1056.61, y: 500}
+  m_SizeDelta: {x: 950, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &615493958
 MonoBehaviour:
@@ -455,6 +456,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 615493956}
   m_CullTransparentMesh: 1
+--- !u!114 &615493960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615493956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b09edc2c0a48814c94e6cae50c36ad6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  json_file: {fileID: 4900000, guid: ee5de9c24dfb1fc45b1e4b41694a5734, type: 3}
+  text_display: {fileID: 615493958}
 --- !u!1 &1722247077
 GameObject:
   m_ObjectHideFlags: 0
