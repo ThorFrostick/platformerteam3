@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Input;
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -20,6 +21,7 @@ namespace Ball
         #endregion
         
         #region Resources
+        public Transform ball;
         public Transform forwardIndicator;
         public Transform tracks;
         public BallMovementParam movementParam;
@@ -32,6 +34,7 @@ namespace Ball
         #region MovementParam
         Vector3 forwardDirection;
         float reAccelRate;
+        float maxSpeed = 5000;
         float maxHorizontalSpeed;
         float accelHorizontal;
         float accelHorizontal_Air;
@@ -49,9 +52,9 @@ namespace Ball
         #region Status
         bool isOnGround;
         bool isInJumpWindow;
-        bool isJumpReady = true;
+        bool isJumpReady;
         float targetSpeed;
-        
+        string currentPhase;
         //For Tracks
         int currentTrack;
         List<SplineContainer> trackList =  new List<SplineContainer>();
@@ -93,7 +96,7 @@ namespace Ball
             inputHandler = GetComponent<BallInputHandler>();
             inputHandler.enabled = false;
             inputHandler.MoveHandler = val => { inputDirection = val; };
-            inputHandler.JumpHandler = () => { isJumping = isInJumpWindow; };
+            inputHandler.JumpHandler = () => { isJumping = isInJumpWindow & isJumpReady; };
             inputHandler.enabled = true;
             if (ControlMode == ControlMode.Tracks)
             {
@@ -143,11 +146,12 @@ namespace Ball
                     StopCoroutine(coyoteTimerInProgress);
                 coyoteTimerInProgress = StartCoroutine(CoyoteTimer());
             }
-            if (isJumping && isJumpReady)
+            if (isJumping)
             {
                 Y = Mathf.Sqrt(2 * gravity * jumpHeight);
-                StartCoroutine(JumpCooldown());
                 isJumping = false;
+                isJumpReady = false;
+                StartCoroutine(JumpCooldown());
             }
             Y -= gravity * Time.fixedDeltaTime;
 
@@ -182,9 +186,11 @@ namespace Ball
                 targetPosition = CalcPosition(trackList[currentTrack], transform.position, forwardDirection);
                 X = CalcSpeed();
             }
-            targetSpeed += accelForward * Time.fixedDeltaTime;
+            targetSpeed = Mathf.Min(targetSpeed + accelForward * Time.fixedDeltaTime, maxSpeed);
             Z = Mathf.Lerp(Z, targetSpeed, Time.fixedDeltaTime * reAccelRate);
             rb.linearVelocity = X * transform.right+ Y * transform.up + Z * forwardDirection;
+
+            ball.rotation *= Quaternion.Euler(Z / (2*Mathf.PI) * 360 * Time.fixedDeltaTime, 0, 0);
         }
 
         Coroutine coyoteTimerInProgress;
@@ -199,7 +205,6 @@ namespace Ball
         
         IEnumerator JumpCooldown()
         {
-            isJumpReady = false;
             yield return new WaitForSeconds(jumpCooldown);
             isJumpReady = true;
         }
@@ -242,7 +247,29 @@ namespace Ball
             // cam.GetComponent<CinemachinePositionComposer>()
         }
 
+        public void ResetSpeed()
+        {
+            targetSpeed = initialSpeed;
+            accelForward = 0.1f;
+        }
+
         #endregion
+
+        public void NotifySwitchPhase(PhaseData data)
+        {
+            if (data.phaseID == currentPhase)
+                return;
+            currentPhase = data.phaseID;
+            if (ControlMode == ControlMode.Tracks)
+            {
+                trackList.Clear();
+                for (int i = 0; i < data.TrackNumber + 2; i++)
+                    trackList.Add(tracks.GetChild(i).GetComponent<SplineContainer>());
+                currentTrack = (trackList.Count - 1) / 2;
+            }
+
+            maxSpeed = data.MaxSpeed;
+        }
 
         void OnDrawGizmosSelected()
         {

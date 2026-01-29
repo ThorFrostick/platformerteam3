@@ -10,8 +10,9 @@ public class KillBarrier : MonoBehaviour
         {
             //If we are colliding with the Player, display a Game Over message.
             // -- TESTING PURPOSES ONLY --
+            ScoreManager.Instance.ResetScore();
             Debug.Log("Game Over");
-            collision.GetComponent<BallController>()?.Reset();
+            collision.GetComponent<PlayerDeath>()?.Die();
         }
     }
 }
