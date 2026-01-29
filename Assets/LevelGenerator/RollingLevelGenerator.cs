@@ -39,10 +39,11 @@ public class RollingLevelGenerator : MonoBehaviour
     [Header("Generate Type Weights")]
     // Random generate weight
     public float wEmpty = 0.25f;
-    public float wNormal = 0.65f;
-    public float wJump = 0.0f;
+    public float wNormal = 0.55f;
+    public float wJump = 0.10f;
     public float wLaser = 0.00f;
     public float wFire = 0.2f;
+    public float Rising = 0.0f;
 
     [Header("Tpye limit")]
     [Range(0f, 1f)] public float laserMaxPerRowRatio = 0.2f; // Only One laser in a row
@@ -356,7 +357,7 @@ public class RollingLevelGenerator : MonoBehaviour
         if (r < wNormal) return TileType.Normal;
         r -= wNormal;
 
-        //if (r < wJump) return TileType.Jump;
+        if (r < wJump) return TileType.Jump;
         return TileType.Fire;
     }
 
