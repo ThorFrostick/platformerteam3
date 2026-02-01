@@ -22,7 +22,10 @@ public class Leaderboard : MonoBehaviour
 
     //This will be externally updated when the level ends, and will be used to add a new score to the leaderboard.
     [HideInInspector]
-    public int coins;
+    public int score;
+
+    [HideInInspector]
+    public float time;
 
     //Get the Text UI we will use to display the leaderboard.
     [SerializeField]
@@ -61,7 +64,7 @@ public class Leaderboard : MonoBehaviour
         readingScores = JsonUtility.FromJson<Scores>(jsonText);
 
         //Add our new score count to the list of read-in scores.
-        AddScore(readingScores, coins);
+        AddScore(readingScores, score);
     }
 
     /// <summary>
@@ -80,20 +83,41 @@ public class Leaderboard : MonoBehaviour
         File.WriteAllText(AssetDatabase.GetAssetPath(file), json);
     }
 
-    public void AddScore(Scores scores, int currentCoins)
+    public void AddScore(Scores scores, int currentScore)
     {
         //Create a new score based on the coins recently acquired
-        PlayerScores newScore = new PlayerScores() { coins = currentCoins };
+        PlayerScores newScore = new PlayerScores() { score = currentScore };
 
-        //Give the player an achievment if they got at least -- 50 -- coins
-        if(newScore.coins >= 5000)
+        //Give the player the Scoremaster achievement if they get at least 5000 score.
+        if(newScore.score >= 5000)
         {
-            newScore.achievment = true;
+            newScore.totalScore = true;
         }
         else
         {
-            newScore.achievment = false;
+            newScore.totalScore = false;
         }
+
+        //If the player ran for longer than 30 seconds, give them the Far Runner achievement,
+        if (time >= 30.0f)
+        {
+            newScore.farRunner = true;
+        }
+        else
+        {
+            newScore.farRunner = false;
+        }
+
+        // -- Must add a way to track the number of friendly NPCs the player gets in their run --
+        ////If the player got at least 3 friends, give them the Companion achievement.
+        //if(companionCount >= 3)
+        //{
+        //  newScore.companion = true;
+        //}
+        //else
+        //{
+          newScore.companion = false;
+        //}
 
         //Add the new score to the list of scores we have loaded in
         scores.scores.Add(newScore);
@@ -108,14 +132,27 @@ public class Leaderboard : MonoBehaviour
 
         //Loop through our updated read-list and add the scores to the display.
         Scores sortedList = readingScores;
-        sortedList.scores.Sort((b, a) => a.coins.CompareTo(b.coins));
+        sortedList.scores.Sort((b, a) => a.score.CompareTo(b.score));
         for(int i = 0; i < sortedList.scores.Count; i++)
         {
-            textDisplay += $"{i + 1}: {sortedList.scores[i].coins}";
+            textDisplay += $"{i + 1}: {sortedList.scores[i].score}";
 
-            if (sortedList.scores[i].achievment)
+            if (sortedList.scores[i].totalScore)
             {
-                textDisplay += $"  Coin Hunter";
+                // -- Change this to icon for Scoremaster achievement --
+                textDisplay += $" Scoremaster";
+            }
+
+            if (sortedList.scores[i].farRunner)
+            {
+                // -- Change this to the icon for Far Runner achievement --
+                textDisplay += $" Far Runner";
+            }
+
+            if (sortedList.scores[i].companion)
+            {
+                // -- Change this to the icon for the Companion achievement -- 
+                textDisplay += $" Companion";
             }
 
             textDisplay += "\n";
@@ -131,8 +168,10 @@ public class Leaderboard : MonoBehaviour
     [Serializable]
     public class PlayerScores
     {
-        public int coins;
-        public bool achievment;
+        public int score;
+        public bool totalScore;
+        public bool farRunner;
+        public bool companion;
     }
 
     [Serializable]

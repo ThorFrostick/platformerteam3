@@ -20,7 +20,7 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private float maxRate = 10f;        // max point/sec
     [SerializeField] private float warmupSeconds = 0f;   // warmup time
 
-    private float elapsedTime = 0f;
+    public float elapsedTime = 0f;
     private float accumulator = 0f;
     private float lastRate = 0f;
 
