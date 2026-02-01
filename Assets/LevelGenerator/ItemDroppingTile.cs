@@ -16,6 +16,9 @@ public class ItemDroppingTile : TileBase
 
     private bool triggered = false;
 
+    [Header("Kill Settings")]
+    public bool killInstant = true;
+
     public BoxCollider surfaceBox;
 
     private void Reset()
@@ -48,25 +51,23 @@ public class ItemDroppingTile : TileBase
             return;
         }
 
-        // 1) 先把 item 实例化为 tile 的子物体（这样 local 空间稳定）
+        // 1) instantiate item
         GameObject item = Instantiate(prefab, transform);
         item.transform.localRotation = Quaternion.identity;
 
-        // 2) 计算落点：取 surfaceBox 顶面在「tile本地空间」的 y
-        // surfaceBox.bounds.max.y 是世界值，但 InverseTransformPoint 会转回 tile 本地
         float topWorldY = surfaceBox.bounds.max.y;
 
-        // 选择一个世界点（x/z 用 tile 自己的世界位置即可）
+        // Get top world point base on height
         Vector3 topWorldPoint = new Vector3(transform.position.x, topWorldY, transform.position.z);
 
-        // 转成 tile 本地坐标
+        // transfor to local position
         Vector3 endLocal = transform.InverseTransformPoint(topWorldPoint);
 
-        // 3) 起点：在落点本地坐标上方 spawnHeight（加上可选偏移）
+        // Set start point
         Vector3 startLocal = endLocal + Vector3.up * spawnHeight + spawnOffset;
         item.transform.localPosition = startLocal;
 
-        // 4) 播放本地下落动画
+        // play dropping animation on local
         var drop = item.GetComponent<FallingItem>();
         if (drop == null)
         {
@@ -76,5 +77,25 @@ public class ItemDroppingTile : TileBase
         }
 
         drop.DropToLocal(endLocal, embedDepth, dropTime);
+    }
+
+    public void NotifyPlayerEnter(GameObject player)
+    {
+        if (killInstant)
+        {
+            KillPlayer(player);
+            return;
+        }
+    }
+
+    // Kill the player when enter
+    void KillPlayer(GameObject player)
+    {
+        //If we are colliding with the Player, display a Game Over message.
+        // -- TESTING PURPOSES ONLY --
+        //ScoreManager.Instance.ResetScore();
+        Debug.Log("Killed by fire tile");
+        player.GetComponent<PlayerDeath>()?.Die();
+
     }
 }

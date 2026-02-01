@@ -1,13 +1,13 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
-public class FireTrigger : MonoBehaviour
+public class ItemTrigger : MonoBehaviour
 {
-    private FireTile tile;
+    private ItemDroppingTile tile;
 
     void Awake()
     {
-        tile = GetComponentInParent<FireTile>();
+        tile = GetComponentInParent<ItemDroppingTile>();
 
         var col = GetComponent<Collider>();
         col.isTrigger = true;
@@ -31,4 +31,3 @@ public class FireTrigger : MonoBehaviour
     }
     */
 }
-
