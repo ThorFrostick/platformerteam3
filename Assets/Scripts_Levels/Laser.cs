@@ -12,7 +12,7 @@ public class Laser : MonoBehaviour
             // -- TESTING PURPOSES ONLY --
             //reset the Player to the beginning of the level.
             ScoreManager.Instance.ResetScore();
-            collision.GetComponent<PlayerDeath>()?.Die();
+            collision.GetComponent<Player>()?.Die();
         }
     }
 }
