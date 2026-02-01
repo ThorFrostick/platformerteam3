@@ -159,7 +159,7 @@ namespace Ball
                 isJumping = false;
                 isJumpReady = false;
                 StartCoroutine(JumpCooldown());
-                hamsterAnimator.SetTrigger("Jump");
+                hamsterAnimator.SetTrigger("OnJump");
             }
             Y -= gravity * Time.fixedDeltaTime;
 
@@ -184,6 +184,13 @@ namespace Ball
                 {
                     if (isMoveReset)
                     {
+                        if (isOnGround)
+                        {
+                            if (inputDirection.x > 0)
+                                hamsterAnimator.SetTrigger("OnTurnRight");
+                            if (inputDirection.x < 0)
+                                hamsterAnimator.SetTrigger("OnTurnLeft");
+                        }
                         currentTrack = Math.Clamp(currentTrack + Math.Sign(inputDirection.x), 0, trackList.Count - 1);
                         isMoveReset = false;
                         Debug.Log($"SetTrack: {currentTrack}");
@@ -279,14 +286,22 @@ namespace Ball
             StartCoroutine(MakeInvincible(2f));
         }
 
-        IEnumerator MakeInvincible(float time)
+        IEnumerator MakeInvincible(float duration)
         {
             isInvincible = true;
-            gravity = 0;
             _collider.isTrigger = true;
             ball.GetComponent<Animator>().SetBool("IsInvincible", true);
-            yield return new WaitForSeconds(time);
-            gravity = movementParam.gravity;
+            float timer = 0;
+            while (timer < duration)
+            {
+                if (transform.position.y < 0.5f)
+                {
+                    transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
+                    rb.linearVelocity = new Vector3(rb.linearVelocity.x,0, rb.linearVelocity.z);
+                }
+                yield return null;
+                timer += Time.deltaTime;
+            }
             isInvincible = false;
             _collider.isTrigger = false;
             ball.GetComponent<Animator>().SetBool("IsInvincible", false);
