@@ -91,6 +91,7 @@ public class GameManager : MonoBehaviour
 
     public void UpdateNewPlayer()
     {
-        Leaderboard.Instance.coins = ScoreManager.Instance.Score;
+        Leaderboard.Instance.score = ScoreManager.Instance.Score;
+        Leaderboard.Instance.time = ScoreManager.Instance.elapsedTime;
     }
 }
