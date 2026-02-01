@@ -19,7 +19,7 @@ public class Leaderboard : MonoBehaviour
     public TextAsset file;
 
     //This will be externally updated when the level ends, and will be used to add a new score to the leaderboard.
-    [HideInInspector]
+    //[HideInInspector]
     public int coins;
 
     //Get the Text UI we will use to display the leaderboard.
@@ -71,6 +71,16 @@ public class Leaderboard : MonoBehaviour
         //Create a new score based on the coins recently acquired
         PlayerScores newScore = new PlayerScores() { coins = currentCoins };
 
+        //Give the player an achievment if they got at least -- 50 -- coins
+        if(newScore.coins >= 50)
+        {
+            newScore.achievment = true;
+        }
+        else
+        {
+            newScore.achievment = false;
+        }
+
         //Add the new score to the list of scores we have loaded in
         scores.scores.Add(newScore);
     }
@@ -87,7 +97,14 @@ public class Leaderboard : MonoBehaviour
         sortedList.scores.Sort((b, a) => a.coins.CompareTo(b.coins));
         for(int i = 0; i < sortedList.scores.Count; i++)
         {
-            textDisplay += $"{i + 1}: {sortedList.scores[i].coins}\n";
+            textDisplay += $"{i + 1}: {sortedList.scores[i].coins}";
+
+            if (sortedList.scores[i].achievment)
+            {
+                textDisplay += $"  Coin Hunter";
+            }
+
+            textDisplay += "\n";
         }
 
         //Upload our string to the display.
@@ -101,6 +118,7 @@ public class Leaderboard : MonoBehaviour
     public class PlayerScores
     {
         public int coins;
+        public bool achievment;
     }
 
     [Serializable]
