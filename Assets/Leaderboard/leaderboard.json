@@ -1,8 +1,20 @@
 {
     "scores": [
         {
-            "coins": 50,
+            "coins": 11520,
             "achievment": true
+        },
+        {
+            "coins": 5702,
+            "achievment": true
+        },
+        {
+            "coins": 50,
+            "achievment": false
+        },
+        {
+            "coins": 50,
+            "achievment": false
         },
         {
             "coins": 18,
@@ -10,6 +22,18 @@
         },
         {
             "coins": 15,
+            "achievment": false
+        },
+        {
+            "coins": 3,
+            "achievment": false
+        },
+        {
+            "coins": 2,
+            "achievment": false
+        },
+        {
+            "coins": 1,
             "achievment": false
         }
     ]

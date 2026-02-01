@@ -8,6 +8,8 @@ using UnityEditor;
 
 public class Leaderboard : MonoBehaviour
 {
+    public static Leaderboard Instance { get; private set; }
+    
     //We will use a list of PlayerScores to write data to the JSON file.
     private Scores writingScores;
 
@@ -25,6 +27,18 @@ public class Leaderboard : MonoBehaviour
     //Get the Text UI we will use to display the leaderboard.
     [SerializeField]
     private TextMeshProUGUI display;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
+        GameManager.Instance.UpdateNewPlayer();
+    }
 
     public void Start()
     {
@@ -72,7 +86,7 @@ public class Leaderboard : MonoBehaviour
         PlayerScores newScore = new PlayerScores() { coins = currentCoins };
 
         //Give the player an achievment if they got at least -- 50 -- coins
-        if(newScore.coins >= 50)
+        if(newScore.coins >= 5000)
         {
             newScore.achievment = true;
         }

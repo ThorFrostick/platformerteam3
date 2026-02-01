@@ -83,4 +83,14 @@ public class GameManager : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
+
+    public void GoToLeaderboard()
+    {
+        SceneManager.LoadScene("Leaderboard");
+    }
+
+    public void UpdateNewPlayer()
+    {
+        Leaderboard.Instance.coins = ScoreManager.Instance.Score;
+    }
 }
