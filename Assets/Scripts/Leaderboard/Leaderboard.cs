@@ -80,7 +80,7 @@ public class Leaderboard : MonoBehaviour
     /// </summary>
     public void DisplayLeaderboard()
     {
-        string textDisplay = "High Scores:\n";
+        string textDisplay = "High Scores:\n\n";
 
         //Loop through our updated read-list and add the scores to the display.
         Scores sortedList = readingScores;
