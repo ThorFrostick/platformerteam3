@@ -19,7 +19,7 @@ public class Leaderboard : MonoBehaviour
     public TextAsset file;
 
     //This will be externally updated when the level ends, and will be used to add a new score to the leaderboard.
-    //[HideInInspector]
+    [HideInInspector]
     public int coins;
 
     //Get the Text UI we will use to display the leaderboard.
