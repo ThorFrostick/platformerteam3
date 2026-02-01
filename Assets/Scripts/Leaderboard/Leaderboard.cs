@@ -8,25 +8,31 @@ using UnityEditor;
 
 public class Leaderboard : MonoBehaviour
 {
-    //We will use a list of PlayerScores to store the data we get from the file.
-    private Scores scores;
+    //We will use a list of PlayerScores to write data to the JSON file.
+    private Scores writingScores;
 
-    
-    private Scores loadedScores;
+    //Use another list to store the PlayerScores we read from the file.
+    private Scores readingScores;
 
     //Define the path we want to read from and write to
     //private string path = Path.Combine(Application.persistentDataPath + "leaderboard.json");
     public TextAsset file;
 
+    //This will be externally updated when the level ends, and will be used to add a new score to the leaderboard.
+    [HideInInspector]
+    public int coins;
+
+    //Get the Text UI we will use to display the leaderboard.
+    [SerializeField]
+    private TextMeshProUGUI display;
+
     public void Start()
     {
-        
         LoadFile();
 
-        // -- Testing 
+        DisplayLeaderboard();
         
-        
-        WriteFile(loadedScores.scores);
+        WriteFile(readingScores.scores);
     }
 
     /// <summary>
@@ -34,11 +40,14 @@ public class Leaderboard : MonoBehaviour
     /// </summary>
     public void LoadFile()
     {
+        //Get all the data from the JSON file.
         string jsonText = File.ReadAllText(AssetDatabase.GetAssetPath(file));
 
-        loadedScores = JsonUtility.FromJson<Scores>(jsonText);
+        //Translate the JSON string into our list of readed Scores.
+        readingScores = JsonUtility.FromJson<Scores>(jsonText);
 
-        //AddScore(loadedScores, 15);
+        //Add our new score count to the list of read-in scores.
+        AddScore(readingScores, coins);
     }
 
     /// <summary>
@@ -46,11 +55,14 @@ public class Leaderboard : MonoBehaviour
     /// </summary>
     public void WriteFile(List<PlayerScores> players)
     {
-        scores = new Scores();
-        scores.scores = players;
+        //Pass our updated readScores into our list for writing.
+        writingScores = new Scores();
+        writingScores.scores = players;
 
-        string json = JsonUtility.ToJson(scores, true);
+        //Translate our entire updated list back into JSON format.
+        string json = JsonUtility.ToJson(writingScores, true);
 
+        //Write all the updated data to the JSON file.
         File.WriteAllText(AssetDatabase.GetAssetPath(file), json);
     }
 
@@ -61,6 +73,25 @@ public class Leaderboard : MonoBehaviour
 
         //Add the new score to the list of scores we have loaded in
         scores.scores.Add(newScore);
+    }
+
+    /// <summary>
+    /// Display our leaderboard on screen for the user.
+    /// </summary>
+    public void DisplayLeaderboard()
+    {
+        string textDisplay = "High Scores:\n";
+
+        //Loop through our updated read-list and add the scores to the display.
+        Scores sortedList = readingScores;
+        sortedList.scores.Sort((b, a) => a.coins.CompareTo(b.coins));
+        for(int i = 0; i < sortedList.scores.Count; i++)
+        {
+            textDisplay += $"{i + 1}: {sortedList.scores[i].coins}\n";
+        }
+
+        //Upload our string to the display.
+        display.text = textDisplay;
     }
 
     /// <summary>
