@@ -36,6 +36,9 @@ public class RollingLevelGenerator : MonoBehaviour
     public GameObject coinPrefab;
     public float coinHeight = 0.6f;
 
+    [Header("Phase Manager")]
+    public TimePhaseTileManager phaseManager;
+
     [Header("Generate Type Weights")]
     // Random generate weight
     public float wEmpty = 0.25f;
@@ -233,7 +236,7 @@ public class RollingLevelGenerator : MonoBehaviour
             }
             else
             {
-                row[c] = early ? OnlySafeTilePick() : WeightedPick();
+                row[c] = early ? OnlySafeTilePick() : PhaseWeightedPick();
             }
         }
 
@@ -362,6 +365,39 @@ public class RollingLevelGenerator : MonoBehaviour
 
         if (r < wFire) return TileType.Fire;
         return TileType.ItemDropping;
+    }
+
+    TileType PhaseWeightedPick()
+    {
+        // Use the old weighted pick 
+        if (phaseManager == null || phaseManager.GetCurrentPhase() == null)
+        {
+            WeightedPick();
+        }
+
+        // Read weight value from current phase
+        float wE = GetW(TileType.Empty);
+        float wN = GetW(TileType.Normal);
+        float wF = GetW(TileType.Fire);
+        float wItem = GetW(TileType.ItemDropping);
+        float wRise = GetW(TileType.Rising);
+
+        float total = wE + wN + wF + wItem + wRise;
+        if (total <= 0.0001f) return TileType.Normal; // ·ÀÖ¹È«0
+
+        double r = rng.NextDouble() * total;
+
+        if (r < wE) return TileType.Empty; r -= wE;
+        if (r < wN) return TileType.Normal; r -= wN;
+        if (r < wF) return TileType.Fire; r -= wF;
+        if (r < wItem) return TileType.ItemDropping; r -= wItem;
+        return TileType.Rising;
+
+        float GetW(TileType t)
+        {
+            if (phaseManager.TryGetWeight(t, out float w)) return Mathf.Max(0f, w);
+            return 0f;
+        }
     }
 
     int Count(TileType[] row, TileType t)
