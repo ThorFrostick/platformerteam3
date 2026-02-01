@@ -3815,7 +3815,7 @@ PrefabInstance:
       objectReference: {fileID: 491624118}
     - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: accelForward
-      value: 0.2
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: initialSpeed
@@ -4801,19 +4801,22 @@ MonoBehaviour:
     prefab: {fileID: 3029424744165353730, guid: c5a53bda2369e764b976a8f563a62348, type: 3}
   - type: 0
     prefab: {fileID: 3029424744165353730, guid: 67a3c273100851d4a82144fa5086f220, type: 3}
-  - type: 1
+  - type: 5
     prefab: {fileID: 3029424744165353730, guid: 782649f5a204497488505be60161da0c, type: 3}
   - type: 4
     prefab: {fileID: 3029424744165353730, guid: cdd18ebe54f097244a5870354a2b9ce6, type: 3}
+  - type: 6
+    prefab: {fileID: 3029424744165353730, guid: 565661d621bcbad47893b75e7d507ddd, type: 3}
   tilesParent: {fileID: 2036186030}
   coinPrefab: {fileID: 6389742279696980711, guid: 06eac7b6caaebb74f83f18a30fed584a, type: 3}
   coinHeight: 0.6
   wEmpty: 0.25
   wNormal: 0.55
-  wJump: 0.1
+  wJump: 0
   wLaser: 0
-  wFire: 0.2
-  Rising: 0
+  wFire: 0.1
+  wRising: 0
+  wItemDropping: 0.2
   laserMaxPerRowRatio: 0.2
   forbidLaserOnSafePath: 1
   forbidLaserAdjacentToSafePath: 0

@@ -40,10 +40,11 @@ public class RollingLevelGenerator : MonoBehaviour
     // Random generate weight
     public float wEmpty = 0.25f;
     public float wNormal = 0.55f;
-    public float wJump = 0.10f;
+    public float wJump = 0.00f;
     public float wLaser = 0.00f;
     public float wFire = 0.2f;
-    public float Rising = 0.0f;
+    public float wRising = 0.10f;
+    public float wItemDropping;
 
     [Header("Tpye limit")]
     [Range(0f, 1f)] public float laserMaxPerRowRatio = 0.2f; // Only One laser in a row
@@ -126,7 +127,7 @@ public class RollingLevelGenerator : MonoBehaviour
         var types = BuildRowTypes();
         for (int col = 0; col < columns; col++)
         {
-            if (types[col] == TileType.Empty) continue;
+            if (types[col] == TileType.Empty || types[col] == TileType.ItemDropping) continue;
             SpawnTile(types[col], rowIndex, col, rowRoot.transform, yOffset: 0f);
         }
 
@@ -156,7 +157,10 @@ public class RollingLevelGenerator : MonoBehaviour
             GameObject newTile = SpawnTile(types[col], rowIndex, col, rowRoot.transform, yOffset: 0f);
             if (newTile != null && col == safeColThisRow)
             {
-                SpawnCoinOnTile(newTile, types[col]);
+                SpawnCoinOnNormalTile(newTile, types[col]);
+            }else if (newTile != null && types[col] == TileType.Rising)
+            {
+                SpawnCoinOnRisinglTile(newTile);
             }
         }
 
@@ -347,7 +351,7 @@ public class RollingLevelGenerator : MonoBehaviour
 
     TileType WeightedPick()
     {
-        double total = wEmpty + wNormal + wFire;
+        double total = wEmpty + wNormal + wFire + wItemDropping;
         double r = rng.NextDouble() * total;
 
         if (r < wEmpty) return TileType.Empty;
@@ -356,8 +360,8 @@ public class RollingLevelGenerator : MonoBehaviour
         if (r < wNormal) return TileType.Normal;
         r -= wNormal;
 
-        if (r < wJump) return TileType.Jump;
-        return TileType.Fire;
+        if (r < wFire) return TileType.Fire;
+        return TileType.ItemDropping;
     }
 
     int Count(TileType[] row, TileType t)
@@ -370,25 +374,28 @@ public class RollingLevelGenerator : MonoBehaviour
 
 
     // Generate a coin on the selected tile
-    void SpawnCoinOnTile(GameObject tileGO, TileType tileType)
+    void SpawnCoinOnNormalTile(GameObject tileGO, TileType tileType)
     {
         if (coinPrefab == null) return;
 
-        if (tileType == TileType.Rising)
-        {
-            //int chance = rng.Next(0, 100);
-            //if(chance < 50)
-            //{
-                GameObject coin = Instantiate(coinPrefab, tileGO.transform);
-                coin.transform.localPosition = Vector3.up * (coinHeight + 1.5f); // 0.6f
-                coin.transform.localRotation = Quaternion.identity;
-            //}
-        } 
-        else if (tileType == TileType.Normal)
+        if (tileType == TileType.Normal)
         {
             GameObject coin01 = Instantiate(coinPrefab, tileGO.transform);
             coin01.transform.localPosition = Vector3.up * coinHeight;
             coin01.transform.localRotation = Quaternion.identity;
+        }
+    }
+
+    void SpawnCoinOnRisinglTile(GameObject tileGO)
+    {
+        if (coinPrefab == null) return;
+
+        int chance = rng.Next(0, 100);
+        if (chance < 40) 
+        {
+             GameObject coin = Instantiate(coinPrefab, tileGO.transform);
+             coin.transform.localPosition = Vector3.up * (coinHeight + 1.5f); // 0.6f
+             coin.transform.localRotation = Quaternion.identity;
         }
     }
 
