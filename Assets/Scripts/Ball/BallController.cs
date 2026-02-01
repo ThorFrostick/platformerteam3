@@ -188,11 +188,19 @@ namespace Ball
             }
             targetSpeed = Mathf.Min(targetSpeed + accelForward * Time.fixedDeltaTime, maxSpeed);
             Z = Mathf.Lerp(Z, targetSpeed, Time.fixedDeltaTime * reAccelRate);
-            rb.linearVelocity = X * transform.right+ Y * transform.up + Z * forwardDirection;
+            rb.linearVelocity = X * transform.right + Y * transform.up + Z * forwardDirection;
 
             ball.rotation *= Quaternion.Euler(Z / (2*Mathf.PI) * 360 * Time.fixedDeltaTime, 0, 0);
         }
 
+        //For Jump pad
+        public void Launch(Vector3 impulse)
+        {
+            Vector3 velocity = rb.linearVelocity;
+            velocity += impulse;
+            rb.linearVelocity = velocity;
+        }
+        
         Coroutine coyoteTimerInProgress;
         
         IEnumerator CoyoteTimer()
