@@ -22,7 +22,8 @@ namespace Ball
         
         #region Resources
         public Transform ball;
-        public Transform forwardIndicator;
+        private Transform shell;
+        // public Transform forwardIndicator;
         public Transform tracks;
         public BallMovementParam movementParam;
         public float initialSpeed;
@@ -46,13 +47,15 @@ namespace Ball
         float coyoteTimeDuration;
         Vector3 groundCheckCenter;
         float groundCheckRange;
-        float trackSwitchingSpeed;
+        float trackSwitchingSpeed;  
         #endregion
 
         #region Status
         bool isOnGround;
         bool isInJumpWindow;
         bool isJumpReady;
+        bool isInvincible;
+        public bool IsInvincible => isInvincible;
         float targetSpeed;
         string currentPhase;
         //For Tracks
@@ -94,6 +97,7 @@ namespace Ball
             Application.targetFrameRate = 60;
             rb = GetComponent<Rigidbody>();
             inputHandler = GetComponent<BallInputHandler>();
+            shell = ball.GetChild(1);
             inputHandler.enabled = false;
             inputHandler.MoveHandler = val => { inputDirection = val; };
             inputHandler.JumpHandler = () => { isJumping = isInJumpWindow & isJumpReady; };
@@ -108,7 +112,7 @@ namespace Ball
 
         void Start()
         {
-            forwardDirection = forwardIndicator.forward;
+            forwardDirection = transform.forward;
             ReadMovementParam(movementParam);
             transform.rotation = Quaternion.LookRotation(forwardDirection, Vector3.up);
             targetSpeed = initialSpeed;
@@ -119,7 +123,7 @@ namespace Ball
 
         void OnValidate()
         {
-            forwardDirection = forwardIndicator.forward;
+            forwardDirection = transform.forward;
             ReadMovementParam(movementParam);
             transform.rotation = Quaternion.LookRotation(forwardDirection, Vector3.up);
         }
@@ -188,11 +192,19 @@ namespace Ball
             }
             targetSpeed = Mathf.Min(targetSpeed + accelForward * Time.fixedDeltaTime, maxSpeed);
             Z = Mathf.Lerp(Z, targetSpeed, Time.fixedDeltaTime * reAccelRate);
-            rb.linearVelocity = X * transform.right+ Y * transform.up + Z * forwardDirection;
+            rb.linearVelocity = X * transform.right + Y * transform.up + Z * forwardDirection;
 
-            ball.rotation *= Quaternion.Euler(Z / (2*Mathf.PI) * 360 * Time.fixedDeltaTime, 0, 0);
+            shell.rotation *= Quaternion.Euler(Z / (2*Mathf.PI) * 360 * Time.fixedDeltaTime, 0, 0);
         }
 
+        //For Jump pad
+        public void Launch(Vector3 impulse)
+        {
+            Vector3 velocity = rb.linearVelocity;
+            velocity += impulse;
+            rb.linearVelocity = velocity;
+        }
+        
         Coroutine coyoteTimerInProgress;
         
         IEnumerator CoyoteTimer()
@@ -206,6 +218,7 @@ namespace Ball
         IEnumerator JumpCooldown()
         {
             yield return new WaitForSeconds(jumpCooldown);
+            yield return new WaitUntil(() => isOnGround);
             isJumpReady = true;
         }
 
@@ -253,7 +266,33 @@ namespace Ball
             accelForward = 0.1f;
         }
 
+        public void Respawn()
+        {
+            rb.linearVelocity = new Vector3(0, 0, 0);
+            currentTrack = (trackList.Count - 1) / 2;
+            targetPosition = CalcPosition(trackList[currentTrack], transform.position, forwardDirection);
+            transform.position = Vector3.Project(targetPosition, transform.right) + Vector3.Project(targetPosition, transform.up) + Vector3.Project(transform.position, transform.forward);
+            StartCoroutine(MakeInvincible(2f));
+        }
+
+        IEnumerator MakeInvincible(float time)
+        {
+            isInvincible = true;
+            gravity = 0;
+            ball.GetComponent<Animator>().SetBool("IsInvincible", true);
+            yield return new WaitForSeconds(time);
+            gravity = movementParam.gravity;
+            isInvincible = false;
+            ball.GetComponent<Animator>().SetBool("IsInvincible", false);
+        }
+
         #endregion
+
+        public void SwitchBall(Transform newBall)
+        {
+            ball = newBall;
+            shell = newBall.GetChild(1);
+        }
 
         public void NotifySwitchPhase(PhaseData data)
         {

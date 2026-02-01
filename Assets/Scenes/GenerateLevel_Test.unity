@@ -3802,6 +3802,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 222555119}
     - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
+      propertyPath: ball
+      value: 
+      objectReference: {fileID: 1214430419}
+    - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: tracks
       value: 
       objectReference: {fileID: 1386108255}
@@ -3821,17 +3825,13 @@ PrefabInstance:
       propertyPath: initialSpeed
       value: 5
       objectReference: {fileID: 0}
-    - target: {fileID: 2813916318006774366, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
-      propertyPath: m_Radius
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2813916318006774366, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
-      propertyPath: m_Center.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3081993663478783747, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 4025976565655719931, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.35
       objectReference: {fileID: 0}
     - target: {fileID: 7349570577554636794, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6023,11 +6023,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 907204243193394155, guid: 3b96d2e31bc85e5469203504da8fb15b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.276159
+      value: 4.7000003
       objectReference: {fileID: 0}
     - target: {fileID: 907204243193394155, guid: 3b96d2e31bc85e5469203504da8fb15b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.7088058
+      value: -3.4641008
       objectReference: {fileID: 0}
     - target: {fileID: 907204243193394155, guid: 3b96d2e31bc85e5469203504da8fb15b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6071,7 +6071,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9121818531336040196, guid: 3b96d2e31bc85e5469203504da8fb15b, type: 3}
       propertyPath: Lens.FieldOfView
-      value: 45
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 9121818531336040196, guid: 3b96d2e31bc85e5469203504da8fb15b, type: 3}
       propertyPath: Lens.FarClipPlane
@@ -23481,7 +23481,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 20000
-  field of view: 45
+  field of view: 60
   orthographic: 0
   orthographic size: 10
   m_Depth: -1
@@ -23508,7 +23508,7 @@ Transform:
   m_GameObject: {fileID: 961739749}
   serializedVersion: 2
   m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
-  m_LocalPosition: {x: 0, y: 4.276159, z: -3.7088058}
+  m_LocalPosition: {x: 0, y: 4.7000003, z: -3.4641008}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -31474,6 +31474,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030988941, guid: abc00000000014017700628883095783, type: 3}
   m_PrefabInstance: {fileID: 1211435672}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1214430419 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7918052077298797018, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
+  m_PrefabInstance: {fileID: 144300617}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1223710220
 PrefabInstance:
