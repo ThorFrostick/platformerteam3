@@ -1,6 +1,13 @@
 {
-    "Player Example": {
-        "coins": 10,
-        "time": 15.4
-    }
+    "scores": [
+        {
+            "coins": 11
+        },
+        {
+            "coins": 15
+        },
+        {
+            "coins": 15
+        }
+    ]
 }
