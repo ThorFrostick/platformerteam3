@@ -11,5 +11,10 @@ public class DeathMenu : MonoBehaviour
     {
         GameManager.Instance.BackToMainMenu();
     }
+
+    public void OnLeaderboardClicked()
+    {
+        GameManager.Instance.GoToLeaderboard();
+    }
 }
 
