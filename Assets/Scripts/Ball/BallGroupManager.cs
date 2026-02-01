@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Ball
 {
-    public class BallSynchronizer : MonoBehaviour
+    public class BallGroupManager : MonoBehaviour
     {
         public Transform hamsterballParent;
         List<GameObject> hamsterBalls = new List<GameObject>();
@@ -49,6 +49,14 @@ namespace Ball
                 if (j < 0)
                     break;
                 hamsterBalls[i].transform.position = positions[j];
+            }
+        }
+
+        public void HideExtraBalls()
+        {
+            for (int i = 1; i < hamsterBalls.Count; i++)
+            {
+                hamsterBalls[i].SetActive(false);
             }
         }
     }

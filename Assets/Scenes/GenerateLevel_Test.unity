@@ -3825,6 +3825,10 @@ PrefabInstance:
       propertyPath: initialSpeed
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 765986499824555353, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
+      propertyPath: hamsterAnimator
+      value: 
+      objectReference: {fileID: 1935527820}
     - target: {fileID: 3081993663478783747, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
       propertyPath: m_Name
       value: Player
@@ -34401,7 +34405,7 @@ Transform:
   m_GameObject: {fileID: 1386108254}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.55, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -47558,6 +47562,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030988861, guid: abc00000000006216850630786905894, type: 3}
   m_PrefabInstance: {fileID: 1932660337}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1935527820 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6390520118857727570, guid: ff4d34251ac20dc4b943b78f6e7df583, type: 3}
+  m_PrefabInstance: {fileID: 144300617}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1941113593
 PrefabInstance:
