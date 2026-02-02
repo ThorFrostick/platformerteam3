@@ -27,6 +27,9 @@ public class TimePhaseTileManager : MonoBehaviour
     [Header("Runtime")]
     public float elapsed;
 
+    public event Action<int> OnPhaseChanged;
+    private int lastPhaseIndex = -1;
+
     public int CurrentPhaseIndex { get; private set; } = 0;
 
     void Awake()
@@ -47,6 +50,12 @@ public class TimePhaseTileManager : MonoBehaviour
             else break;
         }
         CurrentPhaseIndex = idx;
+
+        if (CurrentPhaseIndex != lastPhaseIndex)
+        {
+            lastPhaseIndex = CurrentPhaseIndex;
+            OnPhaseChanged?.Invoke(CurrentPhaseIndex);
+        }
     }
 
     public PhaseConfig GetCurrentPhase()
