@@ -4807,6 +4807,8 @@ MonoBehaviour:
     prefab: {fileID: 3029424744165353730, guid: cdd18ebe54f097244a5870354a2b9ce6, type: 3}
   - type: 6
     prefab: {fileID: 3029424744165353730, guid: 565661d621bcbad47893b75e7d507ddd, type: 3}
+  - type: 7
+    prefab: {fileID: 3029424744165353730, guid: 958416b15094582479f1707891b8b4fa, type: 3}
   tilesParent: {fileID: 2036186030}
   coinPrefab: {fileID: 6389742279696980711, guid: 06eac7b6caaebb74f83f18a30fed584a, type: 3}
   coinHeight: 0.6
@@ -4818,6 +4820,7 @@ MonoBehaviour:
   wFire: 0.1
   wRising: 0
   wItemDropping: 0.2
+  wCage: 0
   laserMaxPerRowRatio: 0.2
   forbidLaserOnSafePath: 1
   forbidLaserAdjacentToSafePath: 0

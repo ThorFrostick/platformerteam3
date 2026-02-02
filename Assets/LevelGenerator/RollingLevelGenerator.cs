@@ -39,24 +39,23 @@ public class RollingLevelGenerator : MonoBehaviour
     [Header("Phase Manager")]
     public TimePhaseTileManager phaseManager;
 
-    [Header("Generate Type Weights")]
-    // Random generate weight
-    public float wEmpty = 0.25f;
-    public float wNormal = 0.55f;
-    public float wJump = 0.00f;
-    public float wLaser = 0.00f;
-    public float wFire = 0.2f;
-    public float wRising = 0.10f;
-    public float wItemDropping;
-
-    [Header("Tpye limit")]
-    [Range(0f, 1f)] public float laserMaxPerRowRatio = 0.2f; // Only One laser in a row
-    public bool forbidLaserOnSafePath = true;
-    public bool forbidLaserAdjacentToSafePath = false;
+    // Generate Type Weights, Random generate weight
+    private float wEmpty = 0.25f;
+    private float wNormal = 0.55f;
+    private float wJump = 0.00f;
+    private float wLaser = 0.00f;
+    private float wFire = 0.2f;
+    private float wRising = 0.10f;
+    private float wItemDropping = 0.00f;
+    private float wCage = 0.00f;
 
     [Header("Random")]
     public int seed = 0;
     public bool useRandomSeed = true;
+
+    private float cageInterval = 30f;
+    private float nextCageTime = 0f;
+    private int pendingCageCount = 0;
 
     // internal
     private System.Random rng;
@@ -74,6 +73,7 @@ public class RollingLevelGenerator : MonoBehaviour
     // Save each row data, use for delete
     private readonly Queue<GameObject> rowRoots = new();
 
+
     void Awake()
     {
         prefabMap = new Dictionary<TileType, GameObject>();
@@ -86,6 +86,7 @@ public class RollingLevelGenerator : MonoBehaviour
 
     void Start()
     {
+        nextCageTime = cageInterval;
         // Generate few rows at the begining of the game
         for (int i = 0; i < keptRows; i++)
             GenerateRowInstant(nextRowIndex++);
@@ -113,6 +114,13 @@ public class RollingLevelGenerator : MonoBehaviour
         {
             var old = rowRoots.Dequeue();
             Destroy(old);
+        }
+
+        // Generate a extra life cage every 30s
+        if (Time.time >= nextCageTime)
+        {
+            pendingCageCount++;
+            nextCageTime += cageInterval;
         }
     }
 
@@ -206,8 +214,8 @@ public class RollingLevelGenerator : MonoBehaviour
         // Decide next safe col from: main-1 / main / main+1   
         int roll = rng.Next(0, 100);
         int step = 0;
-        if (roll < 25) step = -1;       // 25% to left
-        else if (roll < 50) step = +1;  // 25% to right
+        if (roll < 30) step = -1;       // 25% to left
+        else if (roll < 60) step = +1;  // 25% to right
 
         int nextMain = Mathf.Clamp(main + step, 0, columns - 1);
 
@@ -240,39 +248,10 @@ public class RollingLevelGenerator : MonoBehaviour
             }
         }
 
-        // Limit laser logic ------------------------------------------
-        // Not generate laser on safeCol
-        if (forbidLaserOnSafePath)
+        if (pendingCageCount > 0)
         {
-            for (int c = 0; c < columns; c++)
-                if (safeMaskThisRow[c] && row[c] == TileType.Laser)
-                    row[c] = TileType.Normal;
-        }
-
-        if (forbidLaserAdjacentToSafePath)
-        {
-            for (int c = 0; c < columns; c++)
-            {
-                if (!safeMaskThisRow[c]) continue;
-
-                int left = c - 1;
-                int right = c + 1;
-                if (left >= 0 && row[left] == TileType.Laser) row[left] = TileType.Empty;
-                if (right < columns && row[right] == TileType.Laser) row[right] = TileType.Empty;
-            }
-        }
-
-        // Limited the number of laser tile
-        int maxLaser = Mathf.FloorToInt(columns * laserMaxPerRowRatio);
-        maxLaser = Mathf.Clamp(maxLaser, 0, 2);
-
-        while (Count(row, TileType.Laser) > maxLaser)
-        {
-            for (int c = 0; c < columns && Count(row, TileType.Laser) > maxLaser; c++)
-            {
-                if (row[c] == TileType.Laser && !safeMaskThisRow[c])
-                    row[c] = (rng.NextDouble() < 0.6) ? TileType.Empty : TileType.Normal;
-            }
+            row[safeCol] = TileType.cage;
+            pendingCageCount--;
         }
 
         return row;
@@ -383,7 +362,7 @@ public class RollingLevelGenerator : MonoBehaviour
         float wRise = GetW(TileType.Rising);
 
         float total = wE + wN + wF + wItem + wRise;
-        if (total <= 0.0001f) return TileType.Normal; // ·ÀÖ¹È«0
+        if (total <= 0.0001f) return TileType.Normal;
 
         double r = rng.NextDouble() * total;
 

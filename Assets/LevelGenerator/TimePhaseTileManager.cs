@@ -43,13 +43,13 @@ public class TimePhaseTileManager : MonoBehaviour
         elapsed += Time.deltaTime;
 
         // Check the current phase. If elapsed is bigger than the current phase time zone, move to next phase
-        int idx = 0;
+        int phaseindex = 0;
         for (int i = 0; i < phases.Count; i++)
         {
-            if (elapsed >= phases[i].startTime) idx = i;
+            if (elapsed >= phases[i].startTime) phaseindex = i;
             else break;
         }
-        CurrentPhaseIndex = idx;
+        CurrentPhaseIndex = phaseindex;
 
         if (CurrentPhaseIndex != lastPhaseIndex)
         {

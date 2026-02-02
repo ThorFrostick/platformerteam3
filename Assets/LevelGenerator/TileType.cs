@@ -6,5 +6,6 @@ public enum TileType
     Empty,
     Fire,
     Rising,
-    ItemDropping
+    ItemDropping,
+    cage
 }
