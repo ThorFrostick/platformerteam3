@@ -95,7 +95,7 @@ public class ItemDroppingTile : TileBase
         // -- TESTING PURPOSES ONLY --
         //ScoreManager.Instance.ResetScore();
         Debug.Log("Killed by fire tile");
-        player.GetComponent<PlayerDeath>()?.Die();
+        player.GetComponent<Player>()?.Die();
 
     }
 }
