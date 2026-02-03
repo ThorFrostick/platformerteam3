@@ -27,6 +27,9 @@ public class Leaderboard : MonoBehaviour
     [HideInInspector]
     public float time;
 
+    [HideInInspector]
+    public int companions;
+
     //Get the Text UI we will use to display the leaderboard.
     [SerializeField]
     private TextMeshProUGUI display;
@@ -108,16 +111,15 @@ public class Leaderboard : MonoBehaviour
             newScore.farRunner = false;
         }
 
-        // -- Must add a way to track the number of friendly NPCs the player gets in their run --
-        ////If the player got at least 3 friends, give them the Companion achievement.
-        //if(companionCount >= 3)
-        //{
-        //  newScore.companion = true;
-        //}
-        //else
-        //{
+        //If the player got at least 3 friends, give them the Companion achievement.
+        if(companions >= 2)
+        {
+          newScore.companion = true;
+        }
+        else
+        {
           newScore.companion = false;
-        //}
+        }
 
         //Add the new score to the list of scores we have loaded in
         scores.scores.Add(newScore);

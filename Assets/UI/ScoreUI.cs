@@ -19,7 +19,7 @@ public class ScoreUI : MonoBehaviour
 
     private void UpdateUI(int newScore)
     {
-        Debug.Log($"UI Update Score: {newScore} ");
+        //Debug.Log($"UI Update Score: {newScore} ");
         scoreText.text = $"Score: {newScore}";
     }
 }

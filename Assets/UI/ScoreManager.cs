@@ -23,6 +23,7 @@ public class ScoreManager : MonoBehaviour
     public float elapsedTime = 0f;
     private float accumulator = 0f;
     private float lastRate = 0f;
+    public int companions = 0;
 
     private void Awake()
     {
@@ -82,6 +83,7 @@ public class ScoreManager : MonoBehaviour
         accumulator = 0f;
         lastRate = 0f;
         OnScoreChanged?.Invoke(score);
+        companions = 0;
     }
 
     public void SetTimeScoring(bool enabled)

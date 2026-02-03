@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     {
         lifeCnt++;
         OnLifeChanged?.Invoke(lifeCnt);
+        ScoreManager.Instance.companions++;
     }
     
     public void Die()

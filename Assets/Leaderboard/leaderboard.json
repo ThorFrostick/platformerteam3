@@ -1,40 +1,16 @@
 {
     "scores": [
         {
-            "coins": 11520,
-            "achievment": true
+            "score": 33874,
+            "totalScore": true,
+            "farRunner": true,
+            "companion": false
         },
         {
-            "coins": 5702,
-            "achievment": true
-        },
-        {
-            "coins": 50,
-            "achievment": false
-        },
-        {
-            "coins": 50,
-            "achievment": false
-        },
-        {
-            "coins": 18,
-            "achievment": false
-        },
-        {
-            "coins": 15,
-            "achievment": false
-        },
-        {
-            "coins": 3,
-            "achievment": false
-        },
-        {
-            "coins": 2,
-            "achievment": false
-        },
-        {
-            "coins": 1,
-            "achievment": false
+            "score": 26064,
+            "totalScore": true,
+            "farRunner": true,
+            "companion": true
         }
     ]
 }

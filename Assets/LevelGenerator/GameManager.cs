@@ -93,5 +93,6 @@ public class GameManager : MonoBehaviour
     {
         Leaderboard.Instance.score = ScoreManager.Instance.Score;
         Leaderboard.Instance.time = ScoreManager.Instance.elapsedTime;
+        Leaderboard.Instance.companions = ScoreManager.Instance.companions;
     }
 }
