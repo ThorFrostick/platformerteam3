@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1582535214862896205}
   - component: {fileID: 5118839806937925111}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fork
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   - component: {fileID: 8285387880176072691}
   - component: {fileID: 6933051996318953593}
   - component: {fileID: 1268703848406248016}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CollisionBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181,6 +181,10 @@ PrefabInstance:
     - target: {fileID: 9068655186783983387, guid: 3b8b82f2a94863b41aeb7b704941f576, type: 3}
       propertyPath: m_Name
       value: KitchenFork
+      objectReference: {fileID: 0}
+    - target: {fileID: 9068655186783983387, guid: 3b8b82f2a94863b41aeb7b704941f576, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
