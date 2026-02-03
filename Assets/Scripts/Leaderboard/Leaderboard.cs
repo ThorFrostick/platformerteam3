@@ -145,19 +145,19 @@ public class Leaderboard : MonoBehaviour
             {
                 // -- Change this to icon for Scoremaster achievement --
                 //textDisplay += $" Scoremaster";
-                textDisplay += $" <sprite index=0>";
+                textDisplay += $" <sprite index=2>";
             }
 
             if (sortedList.scores[i].farRunner)
             {
                 // -- Change this to the icon for Far Runner achievement --
-                textDisplay += $" Far Runner";
+                textDisplay += $" <sprite index=1>";
             }
 
             if (sortedList.scores[i].companion)
             {
                 // -- Change this to the icon for the Companion achievement -- 
-                textDisplay += $" Companion";
+                textDisplay += $" <sprite index=0>";
             }
 
             textDisplay += "\n";
