@@ -33,6 +33,7 @@ public class Leaderboard : MonoBehaviour
         Instance = this;
     }
 
+    // Displays the leaderboard when the player dies and updates it with the final run data
     public void ShowOnDeath(int finalScore, float finalTime, int finalCompanions)
     {
         score = finalScore;
@@ -45,6 +46,7 @@ public class Leaderboard : MonoBehaviour
         DisplayLeaderboard();
     }
 
+    // Load the leader board data file
     void LoadFile()
     {
         if (!File.Exists(FilePath))
@@ -59,7 +61,6 @@ public class Leaderboard : MonoBehaviour
             string json = File.ReadAllText(FilePath);
             var loaded = JsonUtility.FromJson<Scores>(json);
 
-            // 防null保护
             if (loaded == null || loaded.scores == null)
                 scoresData = new Scores() { scores = new List<PlayerScores>() };
             else
@@ -72,6 +73,7 @@ public class Leaderboard : MonoBehaviour
         }
     }
 
+    // Save the player score data
     void SaveFile()
     {
         try
@@ -85,6 +87,7 @@ public class Leaderboard : MonoBehaviour
         }
     }
 
+    // Add new score info to the leader board, also check if the player has unlocked any achievements
     void AddScore(Scores scores, int currentScore, float runTime, int comp)
     {
         if (scores.scores == null) scores.scores = new List<PlayerScores>();
@@ -100,6 +103,7 @@ public class Leaderboard : MonoBehaviour
         scores.scores.Add(newScore);
     }
 
+    // Display the leader board
     void DisplayLeaderboard()
     {
         if (display == null) return;
