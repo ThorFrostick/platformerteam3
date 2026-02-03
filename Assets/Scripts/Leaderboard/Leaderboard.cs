@@ -24,6 +24,8 @@ public class Leaderboard : MonoBehaviour
     [HideInInspector]
     public int score;
 
+    public Sprite scoreSprite;
+
     [HideInInspector]
     public float time;
 
@@ -102,7 +104,7 @@ public class Leaderboard : MonoBehaviour
         }
 
         //If the player ran for longer than 30 seconds, give them the Far Runner achievement,
-        if (time >= 30.0f)
+        if (time >= 20.0f)
         {
             newScore.farRunner = true;
         }
@@ -142,7 +144,8 @@ public class Leaderboard : MonoBehaviour
             if (sortedList.scores[i].totalScore)
             {
                 // -- Change this to icon for Scoremaster achievement --
-                textDisplay += $" Scoremaster";
+                //textDisplay += $" Scoremaster";
+                textDisplay += $" <sprite index=0>";
             }
 
             if (sortedList.scores[i].farRunner)

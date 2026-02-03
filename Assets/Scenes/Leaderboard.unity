@@ -834,6 +834,10 @@ PrefabInstance:
       propertyPath: coins
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 6439305618641324468, guid: 00846468ee0064a479975413574a7295, type: 3}
+      propertyPath: scoreSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 278b0968d2bd25b4984a038c080fe5cb, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
