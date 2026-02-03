@@ -4813,17 +4813,6 @@ MonoBehaviour:
   coinPrefab: {fileID: 6389742279696980711, guid: 06eac7b6caaebb74f83f18a30fed584a, type: 3}
   coinHeight: 0.6
   phaseManager: {fileID: 2002904360}
-  wEmpty: 0.25
-  wNormal: 0.55
-  wJump: 0
-  wLaser: 0
-  wFire: 0.1
-  wRising: 0
-  wItemDropping: 0.2
-  wCage: 0
-  laserMaxPerRowRatio: 0.2
-  forbidLaserOnSafePath: 1
-  forbidLaserAdjacentToSafePath: 0
   seed: 0
   useRandomSeed: 1
 --- !u!4 &174267112
@@ -18834,7 +18823,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 144300618}
   phaseManager: {fileID: 2002904360}
-  startPhaseIndex: 1
+  startPhaseIndex: 2
   forwardDistance: 16
   height: 3
   sideAmplitude: 6
@@ -49596,7 +49585,7 @@ MonoBehaviour:
       weight: 0
     - type: 5
       weight: 0
-  - startTime: 15
+  - startTime: 20
     weights:
     - type: 0
       weight: 0.4
@@ -49608,7 +49597,7 @@ MonoBehaviour:
       weight: 0
     - type: 5
       weight: 0.1
-  - startTime: 30
+  - startTime: 40
     weights:
     - type: 0
       weight: 0.35

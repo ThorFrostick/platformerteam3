@@ -56,6 +56,7 @@ public class RollingLevelGenerator : MonoBehaviour
     private float cageInterval = 30f;
     private float nextCageTime = 0f;
     private int pendingCageCount = 0;
+    private float levelStartTime;
 
     // internal
     private System.Random rng;
@@ -86,6 +87,7 @@ public class RollingLevelGenerator : MonoBehaviour
 
     void Start()
     {
+        levelStartTime = Time.time;
         nextCageTime = cageInterval;
         // Generate few rows at the begining of the game
         for (int i = 0; i < keptRows; i++)
@@ -117,7 +119,9 @@ public class RollingLevelGenerator : MonoBehaviour
         }
 
         // Generate a extra life cage every 30s
-        if (Time.time >= nextCageTime)
+        float elapsed = Time.time - levelStartTime;
+
+        if (elapsed >= nextCageTime)
         {
             pendingCageCount++;
             nextCageTime += cageInterval;
