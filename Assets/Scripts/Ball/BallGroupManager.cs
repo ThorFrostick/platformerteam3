@@ -48,7 +48,8 @@ namespace Ball
                 }
                 if (j < 0)
                     break;
-                hamsterBalls[i].transform.position = positions[j];
+                hamsterBalls[i].transform.position = new Vector3(positions[j].x, Mathf.Max(positions[j].y, 0.5f), positions[j].z);
+                
             }
         }
 
