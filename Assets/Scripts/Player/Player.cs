@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
+    public int maxLife;
     public int lifeCnt;
     public UnityAction<int> OnLifeChanged;
     private bool dead = false;
@@ -13,11 +14,13 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         ball = GetComponent<BallController>();
+        lifeCnt = Math.Min(lifeCnt, maxLife);
     }
 
     public void AddExtraLife()
     {
         lifeCnt++;
+        lifeCnt = Math.Min(lifeCnt, maxLife);
         OnLifeChanged?.Invoke(lifeCnt);
         ScoreManager.Instance.companions++;
     }
