@@ -1,42 +1,29 @@
-using NUnit.Framework;
-using System;
-using TMPro;
-using UnityEngine;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
+using TMPro;
+using UnityEngine;
 
 public class Leaderboard : MonoBehaviour
 {
     public static Leaderboard Instance { get; private set; }
-    
-    //We will use a list of PlayerScores to write data to the JSON file.
-    private Scores writingScores;
 
-    //Use another list to store the PlayerScores we read from the file.
-    private Scores readingScores;
+    [Header("UI")]
+    [SerializeField] private TextMeshProUGUI display;
 
-    //Define the path we want to read from and write to
-    //private string path = Path.Combine(Application.persistentDataPath + "leaderboard.json");
-    public TextAsset file;
+    public int maxEntriesToShow = 10;
 
-    //This will be externally updated when the level ends, and will be used to add a new score to the leaderboard.
-    [HideInInspector]
-    public int score;
+    public string fileName = "leaderboard.json";
 
-    public Sprite scoreSprite;
+    [HideInInspector] public int score;
+    [HideInInspector] public float time;
+    [HideInInspector] public int companions;
 
-    [HideInInspector]
-    public float time;
+    private Scores scoresData = new Scores() { scores = new List<PlayerScores>() };
 
-    [HideInInspector]
-    public int companions;
+    private string FilePath => Path.Combine(Application.persistentDataPath, fileName);
 
-    //Get the Text UI we will use to display the leaderboard.
-    [SerializeField]
-    private TextMeshProUGUI display;
-
-    private void Awake()
+    void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -44,132 +31,99 @@ public class Leaderboard : MonoBehaviour
             return;
         }
         Instance = this;
-
-        GameManager.Instance.UpdateNewPlayer();
     }
 
-    public void Start()
+    public void ShowOnDeath(int finalScore, float finalTime, int finalCompanions)
     {
+        score = finalScore;
+        time = finalTime;
+        companions = finalCompanions;
+
         LoadFile();
-
+        AddScore(scoresData, score, time, companions);
+        SaveFile();
         DisplayLeaderboard();
-        
-        WriteFile(readingScores.scores);
     }
 
-    /// <summary>
-    /// Load JSON data from a specified path.
-    /// </summary>
-    public void LoadFile()
+    void LoadFile()
     {
-        //Get all the data from the JSON file.
-        string jsonText = File.ReadAllText(AssetDatabase.GetAssetPath(file));
+        if (!File.Exists(FilePath))
+        {
+            scoresData = new Scores() { scores = new List<PlayerScores>() };
+            SaveFile();
+            return;
+        }
 
-        //Translate the JSON string into our list of readed Scores.
-        readingScores = JsonUtility.FromJson<Scores>(jsonText);
+        try
+        {
+            string json = File.ReadAllText(FilePath);
+            var loaded = JsonUtility.FromJson<Scores>(json);
 
-        //Add our new score count to the list of read-in scores.
-        AddScore(readingScores, score);
+            // 防null保护
+            if (loaded == null || loaded.scores == null)
+                scoresData = new Scores() { scores = new List<PlayerScores>() };
+            else
+                scoresData = loaded;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[Leaderboard] Failed to load: {e.Message}");
+            scoresData = new Scores() { scores = new List<PlayerScores>() };
+        }
     }
 
-    /// <summary>
-    /// Write data to our JSON file.
-    /// </summary>
-    public void WriteFile(List<PlayerScores> players)
+    void SaveFile()
     {
-        //Pass our updated readScores into our list for writing.
-        writingScores = new Scores();
-        writingScores.scores = players;
-
-        //Translate our entire updated list back into JSON format.
-        string json = JsonUtility.ToJson(writingScores, true);
-
-        //Write all the updated data to the JSON file.
-        File.WriteAllText(AssetDatabase.GetAssetPath(file), json);
+        try
+        {
+            string json = JsonUtility.ToJson(scoresData, true);
+            File.WriteAllText(FilePath, json);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[Leaderboard] Failed to save: {e.Message}");
+        }
     }
 
-    public void AddScore(Scores scores, int currentScore)
+    void AddScore(Scores scores, int currentScore, float runTime, int comp)
     {
-        //Create a new score based on the coins recently acquired
-        PlayerScores newScore = new PlayerScores() { score = currentScore };
+        if (scores.scores == null) scores.scores = new List<PlayerScores>();
 
-        //Give the player the Scoremaster achievement if they get at least 5000 score.
-        if(newScore.score >= 5000)
+        PlayerScores newScore = new PlayerScores()
         {
-            newScore.totalScore = true;
-        }
-        else
-        {
-            newScore.totalScore = false;
-        }
+            score = currentScore,
+            totalScore = (currentScore >= 5000),
+            farRunner = (runTime >= 20.0f),
+            companion = (comp >= 2)
+        };
 
-        //If the player ran for longer than 30 seconds, give them the Far Runner achievement,
-        if (time >= 20.0f)
-        {
-            newScore.farRunner = true;
-        }
-        else
-        {
-            newScore.farRunner = false;
-        }
-
-        //If the player got at least 3 friends, give them the Companion achievement.
-        if(companions >= 2)
-        {
-          newScore.companion = true;
-        }
-        else
-        {
-          newScore.companion = false;
-        }
-
-        //Add the new score to the list of scores we have loaded in
         scores.scores.Add(newScore);
     }
 
-    /// <summary>
-    /// Display our leaderboard on screen for the user.
-    /// </summary>
-    public void DisplayLeaderboard()
+    void DisplayLeaderboard()
     {
+        if (display == null) return;
+
+        scoresData.scores.Sort((b, a) => a.score.CompareTo(b.score));
+
         string textDisplay = "High Scores:\n\n";
 
-        //Loop through our updated read-list and add the scores to the display.
-        Scores sortedList = readingScores;
-        sortedList.scores.Sort((b, a) => a.score.CompareTo(b.score));
-        for(int i = 0; i < sortedList.scores.Count; i++)
+        int count = Mathf.Min(maxEntriesToShow, scoresData.scores.Count);
+        for (int i = 0; i < count; i++)
         {
-            textDisplay += $"{i + 1}: {sortedList.scores[i].score}";
+            var s = scoresData.scores[i];
+            textDisplay += $"{i + 1}: {s.score}";
 
-            if (sortedList.scores[i].totalScore)
-            {
-                // -- Change this to icon for Scoremaster achievement --
-                //textDisplay += $" Scoremaster";
-                textDisplay += $" <sprite index=2>";
-            }
-
-            if (sortedList.scores[i].farRunner)
-            {
-                // -- Change this to the icon for Far Runner achievement --
-                textDisplay += $" <sprite index=1>";
-            }
-
-            if (sortedList.scores[i].companion)
-            {
-                // -- Change this to the icon for the Companion achievement -- 
-                textDisplay += $" <sprite index=0>";
-            }
+            if (s.totalScore) textDisplay += $" <sprite index=2>";
+            if (s.farRunner) textDisplay += $" <sprite index=1>";
+            if (s.companion) textDisplay += $" <sprite index=0>";
 
             textDisplay += "\n";
         }
 
-        //Upload our string to the display.
         display.text = textDisplay;
     }
 
-    /// <summary>
-    /// This class is the format we will use for uploading data to/from JSON files.
-    /// </summary>
     [Serializable]
     public class PlayerScores
     {

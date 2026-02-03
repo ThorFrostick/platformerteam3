@@ -47,6 +47,17 @@ public class GameManager : MonoBehaviour
         // If using cursor
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+
+        if (Leaderboard.Instance != null)
+        {
+            int finalScore = ScoreManager.Instance.Score;
+
+
+            float finalTime = 0;
+            int finalCompanions = 0;
+
+            Leaderboard.Instance.ShowOnDeath(finalScore, finalTime, finalCompanions);
+        }
     }
 
     public void RestartLevel()
