@@ -34,6 +34,8 @@ public class Player : MonoBehaviour
         else
         {
             GetComponent<BallController>().Respawn();
+            if(lifeCnt == 1)
+                GetComponent<BallGroupManager>().HideExtraBalls();
         }
     }
 

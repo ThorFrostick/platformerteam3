@@ -140,6 +140,7 @@ MonoBehaviour:
   accelForward: 0
   spawnPoint: {fileID: 0}
   cam: {fileID: 0}
+  hamsterAnimator: {fileID: 6390520118857727570}
 --- !u!114 &1894006333544228137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,6 +333,11 @@ PrefabInstance:
 --- !u!4 &1450512584495321200 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8933867429649366851, guid: 7ca79eaa2a7dda5418dc95ce5c030b90, type: 3}
+  m_PrefabInstance: {fileID: 8059816697273347891}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &6390520118857727570 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 3996250490189713761, guid: 7ca79eaa2a7dda5418dc95ce5c030b90, type: 3}
   m_PrefabInstance: {fileID: 8059816697273347891}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &7918052077298797018 stripped
