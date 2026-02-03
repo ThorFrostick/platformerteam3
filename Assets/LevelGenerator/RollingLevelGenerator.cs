@@ -25,7 +25,7 @@ public class RollingLevelGenerator : MonoBehaviour
     public int rowsBehindPlayer = 1;
 
     [Header("Spawn / Drop Animation")]
-    public float spawnHeight = 8f;   // New colume spawn height
+    public float spawnHeight = -4f;   // New colume spawn height
     public float dropTime = 0.35f;   // Colume drop time
 
     [Header("Tile Prefabs")]
@@ -36,23 +36,27 @@ public class RollingLevelGenerator : MonoBehaviour
     public GameObject coinPrefab;
     public float coinHeight = 0.6f;
 
-    [Header("Generate Type Weights")]
-    // Random generate weight
-    public float wEmpty = 0.25f;
-    public float wNormal = 0.55f;
-    public float wJump = 0.10f;
-    public float wLaser = 0.00f;
-    public float wFire = 0.2f;
-    public float Rising = 0.0f;
+    [Header("Phase Manager")]
+    public TimePhaseTileManager phaseManager;
 
-    [Header("Tpye limit")]
-    [Range(0f, 1f)] public float laserMaxPerRowRatio = 0.2f; // Only One laser in a row
-    public bool forbidLaserOnSafePath = true;
-    public bool forbidLaserAdjacentToSafePath = false;
+    // Generate Type Weights, Random generate weight
+    private float wEmpty = 0.25f;
+    private float wNormal = 0.55f;
+    private float wJump = 0.00f;
+    private float wLaser = 0.00f;
+    private float wFire = 0.2f;
+    private float wRising = 0.10f;
+    private float wItemDropping = 0.00f;
+    private float wCage = 0.00f;
 
     [Header("Random")]
     public int seed = 0;
     public bool useRandomSeed = true;
+
+    private float cageInterval = 30f;
+    private float nextCageTime = 0f;
+    private int pendingCageCount = 0;
+    private float levelStartTime;
 
     // internal
     private System.Random rng;
@@ -70,6 +74,7 @@ public class RollingLevelGenerator : MonoBehaviour
     // Save each row data, use for delete
     private readonly Queue<GameObject> rowRoots = new();
 
+
     void Awake()
     {
         prefabMap = new Dictionary<TileType, GameObject>();
@@ -82,6 +87,8 @@ public class RollingLevelGenerator : MonoBehaviour
 
     void Start()
     {
+        levelStartTime = Time.time;
+        nextCageTime = cageInterval;
         // Generate few rows at the begining of the game
         for (int i = 0; i < keptRows; i++)
             GenerateRowInstant(nextRowIndex++);
@@ -110,6 +117,15 @@ public class RollingLevelGenerator : MonoBehaviour
             var old = rowRoots.Dequeue();
             Destroy(old);
         }
+
+        // Generate a extra life cage every 30s
+        float elapsed = Time.time - levelStartTime;
+
+        if (elapsed >= nextCageTime)
+        {
+            pendingCageCount++;
+            nextCageTime += cageInterval;
+        }
     }
 
     // Generate one row directly on the platform
@@ -126,7 +142,7 @@ public class RollingLevelGenerator : MonoBehaviour
         var types = BuildRowTypes();
         for (int col = 0; col < columns; col++)
         {
-            if (types[col] == TileType.Empty) continue;
+            if (types[col] == TileType.Empty || types[col] == TileType.ItemDropping) continue;
             SpawnTile(types[col], rowIndex, col, rowRoot.transform, yOffset: 0f);
         }
 
@@ -156,10 +172,12 @@ public class RollingLevelGenerator : MonoBehaviour
             GameObject newTile = SpawnTile(types[col], rowIndex, col, rowRoot.transform, yOffset: 0f);
             if (newTile != null && col == safeColThisRow)
             {
-                SpawnCoinOnTile(newTile, types[col]);
+                SpawnCoinOnNormalTile(newTile, types[col]);
+            }else if (newTile != null && types[col] == TileType.Rising)
+            {
+                SpawnCoinOnRisinglTile(newTile);
             }
         }
-
 
         // drop animation
         StartCoroutine(DropRow(rowRoot.transform, targetPos, dropTime));
@@ -200,8 +218,8 @@ public class RollingLevelGenerator : MonoBehaviour
         // Decide next safe col from: main-1 / main / main+1   
         int roll = rng.Next(0, 100);
         int step = 0;
-        if (roll < 25) step = -1;       // 25% to left
-        else if (roll < 50) step = +1;  // 25% to right
+        if (roll < 30) step = -1;       // 25% to left
+        else if (roll < 60) step = +1;  // 25% to right
 
         int nextMain = Mathf.Clamp(main + step, 0, columns - 1);
 
@@ -230,43 +248,14 @@ public class RollingLevelGenerator : MonoBehaviour
             }
             else
             {
-                row[c] = early ? OnlySafeTilePick() : WeightedPick();
+                row[c] = early ? OnlySafeTilePick() : PhaseWeightedPick();
             }
         }
 
-        // Limit laser logic ------------------------------------------
-        // Not generate laser on safeCol
-        if (forbidLaserOnSafePath)
+        if (pendingCageCount > 0)
         {
-            for (int c = 0; c < columns; c++)
-                if (safeMaskThisRow[c] && row[c] == TileType.Laser)
-                    row[c] = TileType.Normal;
-        }
-
-        if (forbidLaserAdjacentToSafePath)
-        {
-            for (int c = 0; c < columns; c++)
-            {
-                if (!safeMaskThisRow[c]) continue;
-
-                int left = c - 1;
-                int right = c + 1;
-                if (left >= 0 && row[left] == TileType.Laser) row[left] = TileType.Empty;
-                if (right < columns && row[right] == TileType.Laser) row[right] = TileType.Empty;
-            }
-        }
-
-        // Limited the number of laser tile
-        int maxLaser = Mathf.FloorToInt(columns * laserMaxPerRowRatio);
-        maxLaser = Mathf.Clamp(maxLaser, 0, 2);
-
-        while (Count(row, TileType.Laser) > maxLaser)
-        {
-            for (int c = 0; c < columns && Count(row, TileType.Laser) > maxLaser; c++)
-            {
-                if (row[c] == TileType.Laser && !safeMaskThisRow[c])
-                    row[c] = (rng.NextDouble() < 0.6) ? TileType.Empty : TileType.Normal;
-            }
+            row[safeCol] = TileType.cage;
+            pendingCageCount--;
         }
 
         return row;
@@ -348,7 +337,7 @@ public class RollingLevelGenerator : MonoBehaviour
 
     TileType WeightedPick()
     {
-        double total = wEmpty + wNormal + wFire;
+        double total = wEmpty + wNormal + wFire + wItemDropping;
         double r = rng.NextDouble() * total;
 
         if (r < wEmpty) return TileType.Empty;
@@ -357,8 +346,41 @@ public class RollingLevelGenerator : MonoBehaviour
         if (r < wNormal) return TileType.Normal;
         r -= wNormal;
 
-        if (r < wJump) return TileType.Jump;
-        return TileType.Fire;
+        if (r < wFire) return TileType.Fire;
+        return TileType.ItemDropping;
+    }
+
+    TileType PhaseWeightedPick()
+    {
+        // Use the old weighted pick 
+        if (phaseManager == null || phaseManager.GetCurrentPhase() == null)
+        {
+            WeightedPick();
+        }
+
+        // Read weight value from current phase
+        float wE = GetW(TileType.Empty);
+        float wN = GetW(TileType.Normal);
+        float wF = GetW(TileType.Fire);
+        float wItem = GetW(TileType.ItemDropping);
+        float wRise = GetW(TileType.Rising);
+
+        float total = wE + wN + wF + wItem + wRise;
+        if (total <= 0.0001f) return TileType.Normal;
+
+        double r = rng.NextDouble() * total;
+
+        if (r < wE) return TileType.Empty; r -= wE;
+        if (r < wN) return TileType.Normal; r -= wN;
+        if (r < wF) return TileType.Fire; r -= wF;
+        if (r < wItem) return TileType.ItemDropping; r -= wItem;
+        return TileType.Rising;
+
+        float GetW(TileType t)
+        {
+            if (phaseManager.TryGetWeight(t, out float w)) return Mathf.Max(0f, w);
+            return 0f;
+        }
     }
 
     int Count(TileType[] row, TileType t)
@@ -371,15 +393,29 @@ public class RollingLevelGenerator : MonoBehaviour
 
 
     // Generate a coin on the selected tile
-    void SpawnCoinOnTile(GameObject tileGO, TileType tileType)
+    void SpawnCoinOnNormalTile(GameObject tileGO, TileType tileType)
     {
         if (coinPrefab == null) return;
-        if (tileType != TileType.Normal) return;
 
+        if (tileType == TileType.Normal)
+        {
+            GameObject coin01 = Instantiate(coinPrefab, tileGO.transform);
+            coin01.transform.localPosition = Vector3.up * coinHeight;
+            coin01.transform.localRotation = Quaternion.identity;
+        }
+    }
 
-        GameObject coin = Instantiate(coinPrefab, tileGO.transform);
-        coin.transform.localPosition = Vector3.up * coinHeight;
-        coin.transform.localRotation = Quaternion.identity;
+    void SpawnCoinOnRisinglTile(GameObject tileGO)
+    {
+        if (coinPrefab == null) return;
+
+        int chance = rng.Next(0, 100);
+        if (chance < 40) 
+        {
+             GameObject coin = Instantiate(coinPrefab, tileGO.transform);
+             coin.transform.localPosition = Vector3.up * (coinHeight + 1.5f); // 0.6f
+             coin.transform.localRotation = Quaternion.identity;
+        }
     }
 
 }

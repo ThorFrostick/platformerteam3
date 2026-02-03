@@ -18,7 +18,7 @@ MonoBehaviour:
   frictionHorizontal: 10
   frictionHorizontalInAir: 2
   jumpHeight: 2
-  jumpCooldown: 1
+  jumpCooldown: 0.5
   gravity: 20
   coyoteTimeDuration: 0.2
   groundCheckCenter: {x: 0, y: -0.5, z: 0}

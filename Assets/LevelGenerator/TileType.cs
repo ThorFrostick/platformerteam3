@@ -5,5 +5,7 @@ public enum TileType
     Laser,
     Empty,
     Fire,
-    Rising
+    Rising,
+    ItemDropping,
+    cage
 }

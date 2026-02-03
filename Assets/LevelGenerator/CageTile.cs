@@ -1,14 +1,16 @@
-using System.Collections;
 using UnityEngine;
+using System.Collections;
 
-public class RisingTile : TileBase
+public class CageTile : TileBase
 {
     [Header("Rise Settings")]
-    public Transform visualMesh;
+    public GameObject cageVisual;
+    public bool triggered = false;
+    public Transform visual;
 
     private float startYOffset = -0.6f;
 
-    private float endYOffset = 0.7f;
+    private float endYOffset = 0.8f;
 
     private float riseTime = 0.5f;  // second
 
@@ -19,38 +21,22 @@ public class RisingTile : TileBase
 
     private void Reset()
     {
-        type = TileType.Rising;
+        type = TileType.cage;
     }
 
     void Awake()
     {
-        if (visualMesh == null) visualMesh = transform;
-       // if (triggerZone != null) triggerZone.isTrigger = true;
+        if (visual == null) visual = transform;
     }
 
     void Start()
     {
-        Vector3 p = visualMesh.localPosition;
-        visualMesh.localPosition = new Vector3(p.x, startYOffset, p.z);
+        Vector3 p = visual.localPosition;
+        visual.localPosition = new Vector3(p.x, startYOffset, p.z);
 
         if (riseOnSpawn)
             BeginRise();
     }
-
-    /*
-    public override void OnPlayerEnter(GameObject player)
-    {
-        if (riseOnPlayerEnter)
-            BeginRise();
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (!riseOnPlayerEnter) return;
-        if (other.CompareTag("Player"))
-            BeginRise();
-    }
-    */
 
     void BeginRise()
     {
@@ -63,7 +49,7 @@ public class RisingTile : TileBase
 
     IEnumerator RiseRoutine()
     {
-        Vector3 start = visualMesh.localPosition;
+        Vector3 start = visual.localPosition;
         Vector3 end = new Vector3(start.x, endYOffset, start.z);
 
         float t = 0f;
@@ -74,11 +60,25 @@ public class RisingTile : TileBase
             // easeOut
             float eased = 1f - Mathf.Pow(1f - u, 3f);
 
-            visualMesh.localPosition = Vector3.Lerp(start, end, eased);
+            visual.localPosition = Vector3.Lerp(start, end, eased);
             yield return null;
         }
 
-        visualMesh.localPosition = end;
+        visual.localPosition = end;
         routine = null;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (triggered) return;
+        if(!other.CompareTag("Player")) return;
+
+        triggered = true;
+
+        if (cageVisual == null) return;
+        cageVisual.SetActive(false);
+
+        other.GetComponent<Player>()?.AddExtraLife();
+        
     }
 }
