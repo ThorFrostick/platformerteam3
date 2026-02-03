@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 4456805324403668631}
   - component: {fileID: 2065281351706518510}
   - component: {fileID: 4534969301610334947}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Flame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 17045237666659802}
   - component: {fileID: 8908535092493575631}
   - component: {fileID: 4048028989438641750}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: SoundBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}

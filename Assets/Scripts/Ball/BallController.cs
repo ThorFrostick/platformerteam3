@@ -103,7 +103,10 @@ namespace Ball
             shell = ball.GetChild(1);
             inputHandler.enabled = false;
             inputHandler.MoveHandler = val => { inputDirection = val; };
-            inputHandler.JumpHandler = () => { isJumping = isInJumpWindow & isJumpReady; };
+            inputHandler.JumpHandler = () =>
+            {
+                isJumping = isInJumpWindow & isJumpReady;
+            };
             inputHandler.enabled = true;
             if (ControlMode == ControlMode.Tracks)
             {
@@ -229,13 +232,15 @@ namespace Ball
         IEnumerator JumpCooldown()
         {
             yield return new WaitForSeconds(jumpCooldown);
-            yield return new WaitUntil(() => isOnGround);
+            yield return new WaitUntil(() => GroundCheck());
             isJumpReady = true;
         }
 
         bool GroundCheck()
         {
-            Collider[] colliders = Physics.OverlapSphere(transform.position + groundCheckCenter, groundCheckRange, LayerMask.GetMask("Ground"));
+            Collider[] colliders = Physics.OverlapSphere(transform.position + groundCheckCenter, groundCheckRange, LayerMask.GetMask("Ground", "Block"));
+            // if(colliders.Length > 0)
+            //     Debug.LogWarning(colliders[0].name);
             return colliders.Length > 0;
         }
 
